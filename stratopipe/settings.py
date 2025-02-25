@@ -4,3 +4,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+INSTALLED_APPS = [
+    'authentication',
+]
