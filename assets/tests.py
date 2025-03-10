@@ -9,6 +9,7 @@ from .models import Asset
 User = get_user_model()
 
 class AssetModelTest(TestCase):
+    """ Test the Asset model """
     def setUp(self):
         # Create a test user and project
         self.user = User.objects.create_user(username='testuser', password='testpass')
