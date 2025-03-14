@@ -6,6 +6,7 @@ from .serializers import CommentSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
+    """ ViewSet for the Comment model. """
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -15,4 +16,4 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         # Set the comment's author as the current user
-        serializer.save(user=self.request.user)
+        serializer.save(user=self.request.author)
