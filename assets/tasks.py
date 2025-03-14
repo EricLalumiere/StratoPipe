@@ -7,7 +7,7 @@ from .models import Asset
 
 
 @shared_task
-def process_rendering(asset_id):
+def render_asset(asset_id):
     """Simulate asset rendering and update render_result field."""
     try:
         asset = Asset.objects.get(id=asset_id)
@@ -41,7 +41,7 @@ def generate_thumbnail(asset_id):
 
 
 @shared_task
-def process_ai(asset_id):
+def process_asset_ai(asset_id):
     """Simulate AI processing (analysis, classification) for the asset."""
     try:
         asset = Asset.objects.get(id=asset_id)
