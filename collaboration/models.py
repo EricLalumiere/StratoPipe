@@ -1,16 +1,18 @@
-""" Models for the collaboration app """
-
+""" This module contains the models for the collaboration app. """
 from django.db import models
-from django.conf import settings
+from django.conf import settings  # Use settings.AUTH_USER_MODEL for user references
 from assets.models import Asset
 
-
 class Comment(models.Model):
-    """ Model to store comments on assets """
-    asset = models.ForeignKey(Asset, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    """ This class represents a comment on an asset. """
+    asset = models.ForeignKey(Asset,
+                              on_delete=models.CASCADE,
+                              related_name='comments')
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Comment by {self.user.username} on {self.asset.name}'
+        return f"{self.author.name} - {self.asset.name}"
