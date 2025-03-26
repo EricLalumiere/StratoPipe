@@ -1,0 +1,62 @@
+/* /frontend/src/styles/ProjectManagement.css */
+
+.project-management {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.new-project {
+    margin-bottom: 20px;
+}
+
+.new-project input {
+    padding: 10px;
+    width: 300px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.new-project button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.new-project button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+.project-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.project-item {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.project-item button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.project-item button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
