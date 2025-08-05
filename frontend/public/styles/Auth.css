@@ -63,3 +63,18 @@ input {
 .register-button:hover {
     background-color: #0056b3;
 }
+
+.success {
+    color: green;
+    text-align: center;
+}
+
+.error {
+    color: red;
+    text-align: center;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

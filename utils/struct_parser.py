@@ -63,7 +63,6 @@ class PDFReport(FPDF):
         self.multi_cell(0, 5, text)
         self.ln(1)
 
-
 def parse_python_code(file_path: str) -> dict[str, list[str]]:
     """ Parse a Python file and extract functions and classes from it."""
     try:

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management</title>
+    <!-- Load static file -->
+    <link rel="stylesheet" href="{% static 'styles/ProjectManagement.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Project Management</h1>
+        <nav>
+            <ul>
+                <li><a href="assets.html">Asset List</a></li>
+                <li><a href="upload.html">Asset Upload</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="projectManagementContainer">
+            <!-- Content from ProjectManagement.js will be rendered here -->
+        </div>
+    </main>
+    <script type="module" src="./components/ProjectManagement.js"></script>
+</body>
+</html>
