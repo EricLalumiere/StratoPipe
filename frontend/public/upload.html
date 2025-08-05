@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Asset</title>
+    <link rel="stylesheet" href="./styles/AssetUpload.css">
+</head>
+<body>
+    <header>
+        <h1>Upload Asset</h1>
+        <nav>
+            <a href="assets.html">View Asset List</a>
+        </nav>
+    </header>
+    <div class="asset-upload-container">
+        <form id="uploadForm">
+            <label>
+                Select File:
+                <input type="file" id="fileInput" name="file" required>
+            </label>
+            <button type="submit">Upload</button>
+        </form>
+        <p id="message"></p>
+    </div>
+    <script type="module" src="./components/AssetUpload.js"></script>
+</body>
+</html>

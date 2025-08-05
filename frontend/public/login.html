@@ -3,49 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>User Registration</title>
+    <title>Login</title>
     <link rel="stylesheet" href="./styles/Auth.css">
+
 </head>
 <body>
     <div class="auth-container">
-        <h2>Register</h2>
-        <form id="registerForm">
+        <h2>Login</h2>
+        <form id="loginForm">
             <label>
                 Username:
                 <input type="text" id="username" name="username" required>
             </label>
             <label>
-                Email:
-                <input type="email" id="email" name="email" required>
-            </label>
-            <label>
                 Password:
                 <input type="password" id="password" name="password" required>
             </label>
-            <button type="submit">Register</button>
+            <button type="submit">Login</button>
         </form>
         <p id="message"></p>
     </div>
     <script>
-        const form = document.getElementById('registerForm');
+        const form = document.getElementById('loginForm');
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
             const formData = {
                 username: document.getElementById('username').value,
-                email: document.getElementById('email').value,
                 password: document.getElementById('password').value
             };
             try {
-                const response = await fetch('http://localhost:8000/api/auth/register/', {
+                const response = await fetch('http://localhost:8000/api/auth/login/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
-                const result = await response.json();
-                document.getElementById('message').textContent = result.message || 'Registration successful!';
+                if (response.ok) {
+                    window.location.href = 'project-management.html'; // Redirect to project management
+                } else {
+                    const result = await response.json();
+                    document.getElementById('message').textContent = result.error || 'Login failed.';
+                }
             } catch (error) {
-                document.getElementById('message').textContent = 'Error occurred during registration.';
+                document.getElementById('message').textContent = 'An error occurred during login.';
             }
         });
     </script>

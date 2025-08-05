@@ -1,40 +1,39 @@
-""" Django settings for Stratopipe project. """
-
 from pathlib import Path
 
-# Base directory
+# Base directory path
 BASE_DIR = Path(__file__).resolve().parent.parent
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# SECURITY WARNING: Replace with your secure secret key!
-SECRET_KEY = 'REPLACE-ME_WITH_A_SECURE_SECRET_KEY'
+# Secret key for the project
+SECRET_KEY = 'your-secret-key-here'
+
+# Debug mode enabled
 DEBUG = True
-ALLOWED_HOSTS = []
 
-# Application definition
+# Allowed hosts for the application
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# Installed apps for the project
 INSTALLED_APPS = [
-    # Default Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Third-party apps
-    'rest_framework',
-    'channels',
-    'django_celery_results',
-
     # Project apps
     'authentication',
-    'projects',
     'assets',
-    'collaboration',
     'tasks',
+    'collaboration',
+    'projects',
+    # Third-party apps
+    'corsheaders',  # Added for handling CORS
+    'rest_framework',
 ]
 
+# Middleware for request handling
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Added for CORS
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -42,16 +41,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # Our custom logging middleware
-    'stratopipe.middleware.RequestLoggingMiddleware',
 ]
 
+# URL configuration
 ROOT_URLCONF = 'stratopipe.urls'
 
+# Template settings
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Place your HTML templates here if needed.
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -64,10 +63,10 @@ TEMPLATES = [
     },
 ]
 
+# WSGI application settings
 WSGI_APPLICATION = 'stratopipe.wsgi.application'
-ASGI_APPLICATION = 'stratopipe.asgi.application'
 
-# Database configuration (using SQLite for demonstration)
+# Database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -75,62 +74,59 @@ DATABASES = {
     }
 }
 
-# Channels configuration (using in-memory layer for development)
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer',
-    },
-}
-
-# Celery configuration
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-
-# Specify our custom user model
-AUTH_USER_MODEL = 'authentication.CustomUser'
-
-# Password validation
+# Password validation settings
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
-# Internationalization
+# Internationalization settings
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 # Static files configuration
 STATIC_URL = '/static/'
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Authentication settings
+AUTH_USER_MODEL = 'authentication.CustomUser'  # Custom user model
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # Frontend development server
+    'http://127.0.0.1:3000',  # Alternate local address
+    'http://localhost:63342',  # Allow requests from your frontend
+    'http://127.0.0.1:63342',
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'OPTIONS',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "frontend/public/",
+]
+
+# Define the directory where static files will be collected
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-# Django REST Framework configuration
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-}
-
-# Logging configuration
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console':{'class': 'logging.StreamHandler',},
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
-}
