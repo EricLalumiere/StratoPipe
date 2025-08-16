@@ -5,6 +5,8 @@ from .models import Project
 
 class ProjectSerializer(serializers.ModelSerializer):
     """ Serializer for the Project model """
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         """ Meta class """
         model = Project
