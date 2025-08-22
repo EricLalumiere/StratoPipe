@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asset List</title>
-    <link rel="stylesheet" href="./styles/AssetList.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StratoPipe - Asset List</title>
+    <link rel="stylesheet" href="../src/styles/AssetList.css" />
+    <link rel="stylesheet" href="/styles/main.css" />
 </head>
 <body>
     <header>
@@ -13,7 +14,21 @@
             <a href="upload.html">Upload Asset</a>
         </nav>
     </header>
+
     <div id="assetList"></div>
-    <script type="module" src="./components/AssetList.js"></script>
+
+    <!-- Map bare imports to ESM CDNs so the browser can load React/axios without a bundler -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18",
+        "react-dom/client": "https://esm.sh/react-dom@18/client",
+        "axios": "https://esm.sh/axios@1"
+      }
+    }
+    </script>
+
+    <!-- Bootstrap module that mounts the React component -->
+    <script type="module" src="./components/assets-page.js"></script>
 </body>
 </html>
