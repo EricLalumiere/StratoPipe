@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+
 //import AssetList from "./components/AssetList";
 import AssetUpload from "./components/AssetUpload"; // New Component
 import NotificationHandler from "./notifications/NotificationHandler";
@@ -8,6 +9,7 @@ import Login from "./components/Login";
 import ProjectManagement from "./components/ProjectManagement"; // Future Component
 import './styles/AssetList.css'; // For CSS
 import AssetList from './components/AssetList.js'; // For JS
+import Home from './Home';
 
 const App = () => {
   return (
@@ -32,10 +34,13 @@ const App = () => {
         {/* Routes */}
         <main style={{ padding: "20px" }}>
           <Routes>
+//            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Navigate replace to="/projects" />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/assets" element={<AssetList />} />
             <Route path="/upload" element={<AssetUpload />} />
+            <Route path="/projects" element={<ProjectManagement />} />
             <Route path="/project-management" element={<ProjectManagement />} />
           </Routes>
         </main>
