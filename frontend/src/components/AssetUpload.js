@@ -22,6 +22,7 @@ function AssetUpload() {
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
             setMessage(response.data.message || "Asset uploaded successfully!");
+            window.location.href = "/assets.html";
         } catch (error) {
             setMessage(error.response?.data?.error || "Asset upload failed!");
         }
