@@ -1,20 +1,59 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StratoPipe</title>
-    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="../src/styles/main.css">
 </head>
 <body>
+    <div style="margin-top: 2rem;"></div>
     <header>
         <h1>Welcome to StratoPipe</h1>
-        <nav>
-            <ul>
-                <li><a href="registration.html">Register</a></li>
-                <li><a href="login.html">Login</a></li>
-            </ul>
-        </nav>
+        <h3>a 3D Production Pipeline in the Cloud</h3>
+        <h3>created by Eric Lalumiere</h3>
     </header>
+    <ul style="text-align: left; margin: 0 2rem;">
+        <li>
+            Overview: StratoPipe is an integrated animation asset processing and collaboration platform built using Django (with Django REST, Channels, and Celery) on the backend and React on the frontend. This proof of concept (PoC) focuses on implementing core functionalities to demonstrate the platform's potential.
+        </li>
+
+        <li>
+            This early-stage implementation demonstrates:
+        </li>
+    <ul>
+        <li> A rudimentary interface for managing 3D assets and projects.</li>
+        <li> A RESTful API for asset management and project collaboration.</li>
+        <li> Real-time notifications for asset updates and project changes.</li>
+        <li> A modular architecture that allows for future expansion and integration with other tools.</li>
+    </ul>
+    <li>
+        The StratoPipe platform includes:
+    </li>
+    <ul>
+        <li> User authentication and registration with JWT tokens.</li>
+        <li> A Django backend with user authentication, project management, asset processing (including simulated rendering, thumbnail generation, and AI analysis).</li>
+        <li> Asynchronous background task processing via Celery (with a simulated Redis broker).</li>
+        <li> Real-time collaboration capabilities using Django Channels and WebSocket-based notifications.</li>
+        <li> A modular React frontend for listing assets, displaying detailed asset views, and receiving live notifications.</li>
+    </ul>
+    </ul>
+    </p>
+    <div style="margin-top: 2rem;"></div>
+    <div style="text-align: left;" class="buttons">
+        <a href="login.html">
+            <button class="neumorphic">
+                 <i class="fa-regular fa-sign-in-alt"></i>
+                 <span>Login</span>
+        </button></a>
+        <a href="registration.html">
+             <button class="neumorphic">
+                 <i class="fa-regular fa-user"></i>
+                 <span>Register</span>
+        </button></a>
+    </div>
+
+    <div id="root"></div>
 </body>
 </html>
