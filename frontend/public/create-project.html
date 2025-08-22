@@ -1,0 +1,47 @@
+<!-- frontend/public/create-project.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Project</title>
+  <link rel="stylesheet" href="../src/styles/ProjectManagement.css"/>
+</head>
+<body>
+  <main class="pm-container">
+    <h1>Create Project</h1>
+    <form id="create-form" class="pm-form">
+      <input name="name" id="name" placeholder="Project Name" required />
+      <input name="description" id="description" placeholder="Description (optional)" />
+      <button type="submit">Create</button>
+      <a style="margin-left: 0.5rem" href="project-management.html">Cancel</a>
+    </form>
+    <div id="status" class="pm-error" style="display:none"></div>
+  </main>
+
+  <script type="module">
+    import { createProject } from './api/Projects.js';
+
+    const form = document.getElementById('create-form');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.style.display = 'none';
+      const payload = {
+        name: document.getElementById('name').value.trim(),
+        description: document.getElementById('description').value.trim(),
+      };
+      if (!payload.name) return;
+
+      try {
+        await createProject(payload);
+        window.location.href = 'project-management.html';
+      } catch (e) {
+        status.textContent = 'Failed to create project';
+        status.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
