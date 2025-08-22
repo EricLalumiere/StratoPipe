@@ -1,4 +1,5 @@
 /* /frontend/src/styles/ProjectManagement.css */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css");
 
 .project-management {
     font-family: Arial, sans-serif;
@@ -59,4 +60,67 @@
 .project-item button:disabled {
     background-color: #aaa;
     cursor: not-allowed;
+}
+/* ProjectManagement.css */
+
+.pm-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.pm-error {
+  color: #b00020;
+  margin-bottom: 1rem;
+}
+
+.pm-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pm-form input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.pm-form button {
+  padding: 0 1rem;
+}
+
+.pm-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pm-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.pm-name {
+  font-weight: 500;
+}
+
+.pm-date {
+  color: #666;
+  margin-right: 1rem;
+}
+
+.pm-delete {
+  background: #e53935;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.pm-delete:hover {
+  background: #c62828;
 }
