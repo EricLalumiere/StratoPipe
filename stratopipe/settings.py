@@ -1,10 +1,15 @@
+"""
+Django settings for stratopipe project.
+"""
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parent.parent / '.env')
 
 # Base directory path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret key for the project
-SECRET_KEY = 'your-secret-key-here'
+SECRET_KEY = "-zow4qev2dlowv@d2olqpx-ar62a&znanzfh214&x*y-!s1v%w"
 
 # Debug mode enabled
 DEBUG = True
