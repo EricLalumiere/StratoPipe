@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="./styles/Auth.css">
-
+    <title>StratoPipe - Login</title>
+    <link rel="stylesheet" href="../src/styles/Auth.css">
+    <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
     <div class="auth-container">
+        <h1>StratoPipe</h1>
         <h2>Login</h2>
         <form id="loginForm">
             <label>
@@ -19,7 +20,13 @@
                 Password:
                 <input type="password" id="password" name="password" required>
             </label>
-            <button type="submit">Login</button>
+
+            <div class="buttons">
+                <button class="neumorphic" type= "submit">
+                    <i class= "fa-regular fa-submit"></i>
+                    <span>Login</span>
+                </button>
+            </div>
         </form>
         <p id="message"></p>
     </div>
