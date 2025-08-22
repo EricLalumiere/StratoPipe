@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
+    background-color: #e5e9f4;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,7 +13,7 @@ body {
     width: 100%;
     max-width: 400px;
     padding: 20px;
-    background-color: #fff;
+    background-color: none;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
@@ -52,7 +52,7 @@ input {
 .register-button {
     width: 100%; /* Matches the table width */
     padding: 10px;
-    background-color: #007bff;
+    background-color: none;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -78,3 +78,4 @@ button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
+
