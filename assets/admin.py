@@ -1,4 +1,10 @@
-""" Admin configuration for the Asset model. """
+""" Admin configuration for the Asset model.
+
+This module customizes the Django admin interface for managing
+Asset instances, providing features like list display, filtering,
+and search capabilities.
+
+"""
 
 from django.contrib import admin
 from .models import Asset

@@ -1,4 +1,9 @@
-""" URL patterns for the assets app """
+""" URL patterns for the assets app
+
+This module defines the URL routes for the assets app, mapping
+to the corresponding views for uploading, listing, and retrieving asset details.
+
+"""
 
 from django.urls import path
 from .views import AssetUploadView, AssetDetailView, AssetListView

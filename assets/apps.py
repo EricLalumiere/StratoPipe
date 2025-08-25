@@ -1,4 +1,6 @@
-""" This module contains the configuration of the assets app. """
+""" This module contains the configuration of the assets app.
+It defines the name of the app and can include other configurations.
+"""
 
 from django.apps import AppConfig
 
