@@ -1,4 +1,11 @@
-""" Serializers for the assets app """
+""" Serializers for the assets app
+
+This module defines serializers to convert Asset model instances
+to and from JSON format for API interactions.
+It includes custom logic to handle fields like "uploaded_by" and
+auto-filling the asset name from the uploaded file if not provided.
+
+"""
 
 from rest_framework import serializers
 from .models import Asset

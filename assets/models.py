@@ -1,4 +1,9 @@
-""" Defines the Asset model for storing uploaded files and their metadata """
+""" Defines the Asset model for storing uploaded files and their metadata
+
+The role of the model is to represent various types of assets (images, videos, documents, geometries)
+in the database, along with their relationships to users and projects.
+in a Django application.
+"""
 from django.db import models
 from django.conf import settings  # For referencing the custom user model
 from projects.models import Project  # To establish a relationship with the Project model

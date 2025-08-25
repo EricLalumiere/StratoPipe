@@ -1,4 +1,8 @@
-""" This module contains the views for the assets app. """
+""" This module contains the views for the assets app.
+
+It defines API endpoints for uploading assets, retrieving asset details,
+and listing all assets.
+"""
 
 from rest_framework import generics, permissions
 from rest_framework.response import Response
