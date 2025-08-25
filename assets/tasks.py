@@ -1,4 +1,10 @@
-""" Celery tasks for asset processing. """
+""" Celery tasks for asset processing.
+
+This module defines asynchronous tasks for processing assets,
+including rendering, thumbnail generation, and AI-based enhancements.
+
+"""
+
 
 import time
 from celery import shared_task
