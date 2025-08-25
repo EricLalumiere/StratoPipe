@@ -1,34 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>StratoPipe - Asset List</title>
-    <link rel="stylesheet" href="../src/styles/AssetList.css" />
-    <link rel="stylesheet" href="/styles/main.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StratoPipe - Assets</title>
+  <link rel="stylesheet" href="../src/styles/main.css" />
+
+  <!-- React + ReactDOM UMD builds -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Axios -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Asset List</h1>
-        <nav>
-            <a href="upload.html">Upload Asset</a>
-        </nav>
-    </header>
+  <header>
+    <h1>Project Assets</h1>
+  </header>
 
-    <div id="assetList"></div>
+  <main>
+    <div id="assets-root"></div>
+  </main>
 
-    <!-- Map bare imports to ESM CDNs so the browser can load React/axios without a bundler -->
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18",
-        "react-dom/client": "https://esm.sh/react-dom@18/client",
-        "axios": "https://esm.sh/axios@1"
-      }
-    }
-    </script>
-
-    <!-- Bootstrap module that mounts the React component -->
-    <script type="module" src="./components/assets-page.js"></script>
+  <script type="module">
+    import AssetsPage from './components/AssetsPage.js';
+    ReactDOM.createRoot(document.getElementById('assets-root')).render(
+      React.createElement(AssetsPage, {}, null)
+    );
+  </script>
 </body>
 </html>

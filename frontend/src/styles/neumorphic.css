@@ -1,0 +1,12 @@
+div input[type="button"], button {
+    width: 170px;
+    height: 70px;
+    margin: 200px 400px;
+    font-size: 16px;
+    border-radius: 80px;
+    border-style: none;
+    color: #000;
+    font-weight: 400;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
+    -5px -5px 10px rgba(0, 0, 0, 0.08);
+    }
