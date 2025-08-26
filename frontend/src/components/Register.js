@@ -1,11 +1,9 @@
-// frontend/src/components/Register.js
-
 import React, { useState } from 'react';
 import api from '../api/axiosInstance';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState(null);
 
@@ -15,12 +13,11 @@ function Register() {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setError(null);
     try {
-      // TODO Adjust the POST URL (/auth/register/) to match your Django router
-      // (e.g. /authentication/users/ or /auth/users/).
+      // Adjust POST URL to match your Django router
       await api.post("http://localhost:8000/api/auth/register/", form);
-      // On success, redirect to login
-      history.push('/login');
+      navigate('/login');
     } catch (err) {
       setError(err.response?.data || 'Registration failed');
     }

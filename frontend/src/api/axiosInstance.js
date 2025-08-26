@@ -1,28 +1,46 @@
-// frontend/src/api/axiosInstance.js
-import axios from 'axios';
+// frontend/public/modules/axiosInstance.js
+const axios = window.axios;
+if (!axios) {
+  throw new Error('Axios UMD is not loaded. Include <script src="https://unpkg.com/axios/dist/axios.min.js"></script> before using modules/axiosInstance.js');
+}
 
-// Base config
+function computeBaseURL() {
+  const envUrl = typeof process !== 'undefined' ? process.env?.REACT_APP_API_URL : undefined;
+  if (envUrl) return envUrl.replace(/\/+$/, '/');
+  if (typeof window !== 'undefined' && window.location?.origin && window.location.origin !== 'null') {
+    return `${window.location.origin.replace(/\/+$/, '')}/api/`;
+  }
+  return 'http://localhost:8000/api/';
+}
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api/',
-  headers: { 'Content-Type': 'application/json' }
+  baseURL: computeBaseURL(),
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach token automatically
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, error => Promise.reject(error));
+// If you also rely on cookies during dev, uncomment the next line:
+// api.defaults.withCredentials = true;
 
-// Global 401 handler (optional)
+api.interceptors.request.use(
+  (config) => {
+    const raw = localStorage.getItem('authToken');
+    if (raw) {
+      // If value already includes a scheme (e.g., "Token x" or "Bearer x"), send as-is.
+      // Otherwise default to Bearer.
+      const hasScheme = /\s/.test(raw);
+      config.headers.Authorization = hasScheme ? raw : `Bearer ${raw}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 api.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     if (error.response?.status === 401) {
-      // e.g. redirect to login
-      window.location.href = '/login';
+      const loginUrl = new URL('login.html', window.location.href).href;
+      window.location.href = loginUrl;
     }
     return Promise.reject(error);
   }

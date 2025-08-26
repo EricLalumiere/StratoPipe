@@ -1,28 +1,23 @@
-// frontend/src/components/Login.js
 import React, { useState } from 'react';
 import api from '../api/axiosInstance';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const history = useHistory();
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
 
   const handleChange = e => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setError(null);
     try {
-      //adjust the POST URL (/auth/login/) to match your Django view
-      // (login_user endpoint).
-      const { data } = await api.post("http://localhost:8000/api/auth/login/", credentials);
-      // Expecting { token: string, user: { … } }
-      localStorage.setItem('authToken', data.token);
-      // Optional: store user info
-      localStorage.setItem('currentUser', JSON.stringify(data.user));
-      history.push('/projects');  // or your protected route
+      // Adjust URL to your backend login endpoint if needed
+      await api.post("http://localhost:8000/api/auth/login/", form);
+      navigate('/assets');
     } catch (err) {
       setError(err.response?.data || 'Login failed');
     }
@@ -37,7 +32,7 @@ function Login() {
           Username
           <input
             name="username"
-            value={credentials.username}
+            value={form.username}
             onChange={handleChange}
             required
           />
@@ -47,12 +42,12 @@ function Login() {
           <input
             name="password"
             type="password"
-            value={credentials.password}
+            value={form.password}
             onChange={handleChange}
             required
           />
         </label>
-        <button type="submit">Log In</button>
+        <button type="submit">Sign in</button>
       </form>
     </div>
   );

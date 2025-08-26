@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StratoPipe - Assets</title>
-  <link rel="stylesheet" href="../src/styles/main.css" />
+  <link rel="stylesheet" href="styles/main.css" />
 
   <!-- React + ReactDOM UMD builds -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -23,7 +23,7 @@
   </main>
 
   <script type="module">
-    import AssetsPage from './components/AssetsPage.js';
+    import AssetsPage from '../src/components/AssetsPage.js';
     ReactDOM.createRoot(document.getElementById('assets-root')).render(
       React.createElement(AssetsPage, {}, null)
     );
