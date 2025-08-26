@@ -1,24 +1,16 @@
-// frontend/public/api/projects.js
-import axios from 'axios';
+// api/projects.js
+// Minimal API helpers using axios; assumes auth session is already established.
 
-function authHeaders() {
-  // If you use token auth, implement here, e.g.:
-  // const token = localStorage.getItem('access_token');
-  // return token ? { Authorization: `Bearer ${token}` } : {};
-  return {};
-}
+const API_BASE = '/api/projects/';
 
 export async function fetchProjects() {
-  const res = await axios.get('/api/projects/', { headers: authHeaders() });
+  const res = await axios.get(API_BASE, { withCredentials: true });
   return res.data;
 }
 
 export async function createProject(payload) {
-  const res = await axios.post('/api/projects/', payload, { headers: authHeaders() });
+  const res = await axios.post(API_BASE, payload, { withCredentials: true });
   return res.data;
 }
 
-export async function deleteProject(id) {
-  await axios.delete(`/api/projects/${id}/`, { headers: authHeaders() });
-  return true;
-}
+// Optional: delete, update, etc. could be added here.

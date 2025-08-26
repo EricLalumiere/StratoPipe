@@ -2,7 +2,7 @@
 // Bundler-free React component using globals (React, ReactDOM) and axios.
 // Exports a default component for project-management.html to import.
 
-import { fetchProjects, createProject } from '../api/projects.js';
+import { fetchProjects, createProject } from './projects.js';
 
 export default function ProjectManagement() {
   const { useEffect, useState } = React;

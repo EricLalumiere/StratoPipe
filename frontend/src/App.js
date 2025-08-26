@@ -1,15 +1,14 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
 
-//import AssetList from "./components/AssetList";
-import AssetUpload from "./components/AssetUpload"; // New Component
+import AssetUpload from "./components/AssetUpload";
 import NotificationHandler from "./notifications/NotificationHandler";
 import Register from "./components/Register";
 import Login from "./components/Login";
-import ProjectManagement from "./components/ProjectManagement"; // Future Component
-import './styles/AssetList.css'; // For CSS
-import AssetList from './components/AssetList.js'; // For JS
-import Home from './Home';
+import ProjectManagement from "./components/ProjectManagement";
+import './styles/AssetList.css';
+import AssetList from './components/AssetList.js';
+// import Home from './Home'; // Remove or keep commented if you don’t have this file
 
 const App = () => {
   return (
@@ -17,7 +16,6 @@ const App = () => {
       <div>
         <header style={{ padding: "10px", backgroundColor: "#007bff", color: "#fff" }}>
           <h1>StratoPipe</h1>
-          {/* Navigation Links */}
           <nav>
             <ul style={{ listStyleType: "none", display: "flex", gap: "15px", padding: 0 }}>
               <li><Link to="/register" style={{ color: "#fff", textDecoration: "none" }}>Register</Link></li>
@@ -31,10 +29,9 @@ const App = () => {
 
         <NotificationHandler />
 
-        {/* Routes */}
         <main style={{ padding: "20px" }}>
           <Routes>
-//            <Route path="/" element={<Home />} />
+            {/* <Route path="/" element={<Home />} /> */}
             <Route path="/" element={<Navigate replace to="/projects" />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />

@@ -1,66 +1,33 @@
-// frontend/public/components/assets-page.js (path as referenced by assets.html)
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import api from '../api/axiosInstance';
 
-function useQuery() {
-  return new URLSearchParams(window.location.search);
-}
+export default function AssetList() {
+  const [assets, setAssets] = useState([]);
+  const [error, setError] = useState(null);
 
-function AssetList() {
-  const query = useQuery();
-  const projectId = query.get('projectId');
-  const projectName = query.get('projectName');
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get('/api/assets/');
+        setAssets(Array.isArray(data) ? data : (data?.results ?? []));
+      } catch (e) {
+        setError('Failed to load assets');
+        // eslint-disable-next-line no-console
+        console.error(e);
+      }
+    })();
+  }, []);
 
-  const [assets, setAssets] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState('');
-
-  React.useEffect(() => {
-    let url = '/api/assets/';
-    const params = {};
-    if (projectId) {
-      // Backend should support filtering by ?project=<id>
-      params.project = projectId;
-    }
-
-    setLoading(true);
-    axios
-      .get(url, { params })
-      .then(res => setAssets(res.data))
-      .catch(() => setError('Failed to load assets'))
-      .finally(() => setLoading(false));
-  }, [projectId]);
+  if (error) return <div className="error">{error}</div>;
+  if (!assets.length) return <div>No assets yet.</div>;
 
   return (
-    <div style={{ padding: '1rem' }}>
-      <header>
-        <h1>
-          {projectId
-            ? `Assets for Project: ${projectName || projectId}`
-            : 'All Assets'}
-        </h1>
-        <nav>
-          <a href="upload.html">Upload Asset</a> |{' '}
-          <a href="project-management.html">Back to Projects</a>
-        </nav>
-      </header>
-
-      {loading && <p>Loading…</p>}
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
-      {!loading && !error && (
-        <ul>
-          {assets.map(a => (
-            <li key={a.id}>
-              <strong>{a.name || a.file}</strong>
-              {a.status ? ` — ${a.status}` : null}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <ul className="asset-list">
+      {assets.map(a => (
+        <li key={a.id}>
+          <strong>{a.name || a.filename || `Asset #${a.id}`}</strong>
+        </li>
+      ))}
+    </ul>
   );
 }
-
-const mount = document.getElementById('assetList');
-createRoot(mount).render(<AssetList />);

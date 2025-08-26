@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./AssetUpload.css";
+import "../styles/AssetUpload.css";
+
 
 function AssetUpload() {
     const [file, setFile] = useState(null);

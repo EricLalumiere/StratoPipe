@@ -1,59 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StratoPipe - Login</title>
-    <link rel="stylesheet" href="../src/styles/Auth.css">
-    <link rel="stylesheet" href="/styles/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StratoPipe - Login</title>
+  <link rel="stylesheet" href="/styles/Auth.css">
+  <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
-    <div class="auth-container">
-        <h1>StratoPipe</h1>
-        <h2>Login</h2>
-        <form id="loginForm">
-            <label>
-                Username:
-                <input type="text" id="username" name="username" required>
-            </label>
-            <label>
-                Password:
-                <input type="password" id="password" name="password" required>
-            </label>
+  <div class="auth-container">
+    <h1>StratoPipe</h1>
+    <h2>Login</h2>
+    <form id="loginForm">
+      <label>
+        Username:
+        <input type="text" id="username" name="username" required>
+      </label>
+      <label>
+        Password:
+        <input type="password" id="password" name="password" required>
+      </label>
 
-            <div class="buttons">
-                <button class="neumorphic" type= "submit">
-                    <i class= "fa-regular fa-submit"></i>
-                    <span>Login</span>
-                </button>
-            </div>
-        </form>
-        <p id="message"></p>
-    </div>
-    <script>
-        const form = document.getElementById('loginForm');
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const formData = {
-                username: document.getElementById('username').value,
-                password: document.getElementById('password').value
-            };
-            try {
-                const response = await fetch('http://localhost:8000/api/auth/login/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-                if (response.ok) {
-                    window.location.href = 'project-management.html'; // Redirect to project management
-                } else {
-                    const result = await response.json();
-                    document.getElementById('message').textContent = result.error || 'Login failed.';
-                }
-            } catch (error) {
-                document.getElementById('message').textContent = 'An error occurred during login.';
-            }
-        });
-    </script>
-</body>
-</html>
+      <div class="buttons">
+        <button class="neumorphic" type="submit">
+          <span>Login</span>
+        </button>
+      </div>
+    </form>
+    <p id="message"></p>
+  </div>
+
+<!-- HTML -->
+<script>
+  // Simple, regex-free cookie reader
+  function getCookie(name) {
+    const target = name + '=';
+    const parts = document.cookie.split(';');
+    for (let part of parts) {
+      part = part.trim();
+      if (part.startsWith(target)) {
+        return decodeURIComponent(part.slice(target.length));
+      }
+    }
+    return null;
+  }
+
+  async function ensureCsrfCookie() {
+    if (getCookie('csrftoken')) return;
+    try { await fetch('/api/csrf/', { credentials: 'include' }); } catch {}
+    if (getCookie('csrftoken')) return;
+    try { await fetch('/api/', { credentials: 'include' }); } catch {}
+  }
+
+  const form = document.getElementById('loginForm');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    try {
+      // Ensure CSRF cookie exists for same-origin (3000)
+      await ensureCsrfCookie();
+      const csrf = getCookie('csrftoken');
+
+      const payload = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+      };
+
+      const response = await fetch('/api/auth/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(csrf ? { 'X-CSRFToken': csrf } : {})
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+
+      // Try to parse JSON, but don't let failures block redirect
+      let result = null;
+      try { result = await response.clone().json(); } catch {}
+
+      if (response.ok) {
+        // Store token if present, but redirect regardless of it
+        const token = result && (result.token || result.access || result.key || result.jwt) || null;
+        if (token) localStorage.setItem('authToken', token);
+
+        // Use replace() so Back won’t return to login
+        window.location.replace('project-management.html');
+        return;
+      }
+
+      // Non-2xx: surface best available error
+      const text = result?.error || result?.detail || (await response.text().catch(() => 'Login failed.'));
+      document.getElementById('message').textContent = text || `Login failed (${response.status}).`;
+    } catch (err) {
+      console.error('Login error:', err);
+      document.getElementById('message').textContent = 'An error occurred during login.';
+    }
+  });
+</script>

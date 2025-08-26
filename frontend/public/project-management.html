@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StratoPipe - Project Management</title>
-    <link rel="stylesheet" href="../src/styles/ProjectManagement.css">
-    <link rel="stylesheet" href="../src/styles/main.css">
+    <link rel="stylesheet" href="/styles/ProjectManagement.css">
+    <link rel="stylesheet" href="/styles/main.css">
 
     <!-- React + ReactDOM UMD builds -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"
@@ -26,18 +26,8 @@
      <!-- 4) Mount point for our component -->
     <div id="pm-root"></div>
 
-     <!-- 5) Your bundler-free component + API service -->
-    <script type="module">
-      import ProjectManagement from './components/ProjectManagement.js';
-      import { fetchProjects, createProject, deleteProject } from './api/projects.js';
-
-      // Inject our API fns into window for debug
-      window.ProjectAPI = { fetchProjects, createProject, deleteProject };
-
-      ReactDOM.createRoot(document.getElementById('pm-root')).render(
-        React.createElement(ProjectManagement, {}, null)
-      );
-    </script>
+    <!-- Load the bundled script (no type=module) -->
+    <script src="/dist/pm.bundle.js" defer></script>
 
     <div class="buttons">
         <a href="create-project.html">
@@ -52,6 +42,5 @@
             <!-- Content from ProjectManagement.js will be rendered here -->
         </div>
     </main>
-    <script type="module" src="./components/ProjectManagement.js"></script>
 </body>
 </html>
