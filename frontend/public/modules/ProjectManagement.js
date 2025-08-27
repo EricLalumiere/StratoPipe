@@ -69,60 +69,78 @@ export default function ProjectManagement() {
     { className: 'pm-container' },
     // Create form
     React.createElement('section', { className: 'pm-create' },
-      React.createElement('h3', null, 'Create Project'),
-      React.createElement('form', { onSubmit: handleCreate },
-        React.createElement('div', { className: 'field' },
-          React.createElement('label', { htmlFor: 'pm-name' }, 'Name'),
-          React.createElement('input', {
-            id: 'pm-name',
-            name: 'name',
-            value: form.name,
-            onChange: onFieldChange,
-            placeholder: 'e.g., Project ABC',
-            required: true,
-            className: 'neu-input'
-          })
+      React.createElement('div', { className: 'neu-frame' },
+        React.createElement('h3', null, 'Create Project'),
+        React.createElement('form', { onSubmit: handleCreate },
+          React.createElement('div', { className: 'field' },
+            React.createElement('label', { htmlFor: 'pm-name' }, 'Name'),
+            React.createElement('input', {
+              id: 'pm-name',
+              name: 'name',
+              value: form.name,
+              onChange: onFieldChange,
+              placeholder: 'e.g., Project ABC',
+              required: true,
+              className: 'neu-input'
+            })
+          ),
+          React.createElement('div', { className: 'field' },
+            React.createElement('label', { htmlFor: 'pm-desc' }, 'Description'),
+            React.createElement('textarea', {
+              id: 'pm-desc',
+              name: 'description',
+              value: form.description,
+              onChange: onFieldChange,
+              placeholder: 'Optional',
+              rows: 3,
+              className: 'neu-textarea'
+            })
+          ),
+          React.createElement('button', { type: 'submit', disabled: creating, className: 'neu-button' },
+            creating ? 'Creating…' : 'Create Project'
+          )
         ),
-        React.createElement('div', { className: 'field' },
-          React.createElement('label', { htmlFor: 'pm-desc' }, 'Description'),
-          React.createElement('textarea', {
-            id: 'pm-desc',
-            name: 'description',
-            value: form.description,
-            onChange: onFieldChange,
-            placeholder: 'Optional',
-            rows: 3,
-            className: 'neu-textarea'
-          })
-        ),
-        React.createElement('button', { type: 'submit', disabled: creating, className: 'neu-button' },
-          creating ? 'Creating…' : 'Create Project'
-        )
-      ),
-      error && React.createElement('div', { className: 'pm-error' }, error)
+        error && React.createElement('div', { className: 'pm-error' }, error)
+      )
     ),
+
+    // add a spacer
+    React.createElement('div', { style: { height: '1rem' } }),
 
     // Projects list
     React.createElement('section', { className: 'pm-list' },
-      React.createElement('h3', null, 'Your Projects'),
-      loading
-        ? React.createElement('div', null, 'Loading projects…')
-        : projects.length === 0
-          ? React.createElement('div', null, 'No projects yet.')
-          : React.createElement('ul', { className: 'pm-project-list' },
-              projects.map((p) =>
-                React.createElement('li', { key: p.id, className: 'pm-project-item' },
-                  React.createElement('a', {
-                    // Link to assets page with projectId
-                    href: `/assets?projectId=${encodeURIComponent(p.id)}`, // SPA route handled by React Router
-                    title: `Open assets for ${p.name}`,
-                  }, p.name),
-                  p.description
-                    ? React.createElement('div', { className: 'pm-project-desc' }, p.description)
-                    : null
+      React.createElement('div', { className: 'neu neu-frame' },
+        React.createElement('h3', null, 'Your Projects'),
+        loading
+          ? React.createElement('div', null, 'Loading projects…')
+          : projects.length === 0
+            ? React.createElement('div', null, 'No projects yet.')
+            : React.createElement('ul', { className: 'pm-project-list' },
+                projects.map((p) =>
+                  React.createElement('li', { key: p.id, className: 'pm-project-item' },
+                    React.createElement('div', {
+                      className: 'pm-project-row',
+                      style: {
+                        display: 'flex',
+                        alignItems: 'baseline',
+                        columnGap: '0.75rem',
+                        rowGap: '0.25rem',
+                        flexWrap: 'wrap'
+                      }
+                    },
+                      React.createElement('a', {
+                        className: 'neu-link',
+                        href: `/project.html?projectId=${encodeURIComponent(p.id)}`,
+                        title: `Open assets for ${p.name}`,
+                      }, p.name),
+                      p.description
+                        ? React.createElement('span', { className: 'pm-project-desc' }, p.description)
+                        : null
+                    )
+                  )
                 )
               )
-            )
+      )
     )
   );
 }
