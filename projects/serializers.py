@@ -10,7 +10,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         """ Meta class """
         model = Project
-        fields = ['id', 'owner', 'name', 'description', 'created_at', 'updated_at']
+        fields = ['id', 'owner', 'name', 'description', 'created_at',
+                  'updated_at', 'active']
         read_only_fields = ['id', 'owner', 'created_at', 'updated_at']
 
     def create(self, validated_data):

@@ -1,4 +1,10 @@
 // JavaScript
+// API functions for managing projects
+// Uses axios instance with base URL and credentials
+// Handles CSRF token for POST and DELETE requests
+// Exports functions: fetchProjects, createProject, deleteProject
+//--------------------------------------------
+
 import api from './axiosInstance.js';
 
 function getCsrfCookie() {
@@ -33,4 +39,17 @@ export async function deleteProject(id) {
       ...(csrf ? { 'X-CSRFToken': csrf } : {})
     }
   });
+}
+
+// Add this export alongside existing exports (e.g., fetchProjects, createProject)
+export async function deactivateProject(projectId) {
+  // If this file uses a configured axios instance, use it here as well.
+  // Example with a base axios import:
+  // return axios.patch(`/api/projects/${projectId}/`, { active: false });
+
+  // Example if this file uses an axiosInstance:
+  // return axiosInstance.patch(`/api/projects/${projectId}/`, { active: false });
+
+  // If the file already defines a common client variable, reuse it:
+  return axios.patch(`/api/projects/${projectId}/`, { active: false });
 }

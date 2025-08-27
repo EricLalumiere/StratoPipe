@@ -18,7 +18,10 @@ export default function ProjectManagement() {
       setLoading(true);
       setError(null);
       const data = await fetchProjects();
-      setProjects(Array.isArray(data) ? data : (data?.results ?? []));
+      const raw = Array.isArray(data) ? data : (data?.results ?? []);
+      // Only keep active projects on the client side
+      const onlyActive = raw.filter(p => p?.active === true);
+      setProjects(onlyActive);
     } catch (e) {
       setError('Failed to load projects.');
       console.error(e);
@@ -75,8 +78,9 @@ export default function ProjectManagement() {
             name: 'name',
             value: form.name,
             onChange: onFieldChange,
-            placeholder: 'e.g., Shot 010',
+            placeholder: 'e.g., Project ABC',
             required: true,
+            className: 'neu-input'
           })
         ),
         React.createElement('div', { className: 'field' },
@@ -88,9 +92,10 @@ export default function ProjectManagement() {
             onChange: onFieldChange,
             placeholder: 'Optional',
             rows: 3,
+            className: 'neu-textarea'
           })
         ),
-        React.createElement('button', { type: 'submit', disabled: creating },
+        React.createElement('button', { type: 'submit', disabled: creating, className: 'neu-button' },
           creating ? 'Creating…' : 'Create Project'
         )
       ),

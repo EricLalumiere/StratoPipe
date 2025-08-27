@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StratoPipe - Project Management</title>
-    <link rel="stylesheet" href="/styles/ProjectManagement.css">
-    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="./styles/ProjectManagement.css">
+    <link rel="stylesheet" href="./styles/components.css">
 
     <!-- React + ReactDOM UMD builds -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"
@@ -19,7 +19,7 @@
 
 <body>
     <div style="margin-top: 2rem;"></div>
-    <header>
+    <header style="text-align: center;">
         <h1>Welcome to StratoPipe</h1>
         <h2>Project Management</h2>
     </header>
@@ -27,16 +27,10 @@
     <div id="pm-root"></div>
 
     <!-- Load the bundled script (no type=module) -->
-    <script src="/dist/pm.bundle.js" defer></script>
+<!--    <script src="/dist/pm.bundle.js" defer></script>-->
+    <script src="/dist/pm.bundle.js?v=2" defer></script>
 
-    <div class="buttons">
-        <a href="create-project.html">
-            <button class="neumorphic">
-                <i class= "fa-regular fa-house"></i>
-                <span>New Project</span>
-            </button>
-        </a>
-    </div>
+
     <main>
         <div id="projectManagementContainer">
             <!-- Content from ProjectManagement.js will be rendered here -->

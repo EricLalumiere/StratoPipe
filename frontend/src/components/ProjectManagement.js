@@ -2,7 +2,8 @@
 // Bundler-free React component using globals (React, ReactDOM) and axios.
 // Exports a default component for project-management.html to import.
 
-import { fetchProjects, createProject } from '../api/projects.js';
+// Update import to include deactivateProject
+import { fetchProjects, createProject, deactivateProject } from '../api/projects.js';
 
 export default function ProjectManagement() {
   const { useEffect, useState } = React;
@@ -18,7 +19,9 @@ export default function ProjectManagement() {
       setLoading(true);
       setError(null);
       const data = await fetchProjects();
-      setProjects(Array.isArray(data) ? data : (data?.results ?? []));
+      const raw = Array.isArray(data) ? data : (data?.results ?? []);
+      const onlyActive = raw.filter(p => p?.active === true);
+      setProjects(onlyActive);
     } catch (e) {
       setError('Failed to load projects.');
       console.error(e);
@@ -44,9 +47,7 @@ export default function ProjectManagement() {
         name: form.name.trim(),
         description: form.description?.trim() || '',
       });
-      // Refresh the list immediately after creation
       await loadProjects();
-      // Reset form
       setForm({ name: '', description: '' });
     } catch (e) {
       setError('Failed to create project.');
@@ -61,12 +62,25 @@ export default function ProjectManagement() {
     setForm((f) => ({ ...f, [name]: value }));
   }
 
+  // New: deactivate handler
+  async function handleDeactivate(projectId) {
+    try {
+      setError(null);
+      await deactivateProject(projectId);
+      await loadProjects(); // refresh the list to reflect deletion (active=False)
+    } catch (e) {
+      setError('Failed to delete the project.');
+      console.error(e);
+    }
+  }
+
   return React.createElement(
     'div',
     { className: 'pm-container' },
     // Create form
     React.createElement('section', { className: 'pm-create' },
-      React.createElement('h3', null, 'Create Project'),
+      // Ensure there is no stray “``” after the heading line
+React.createElement('h3', null, 'Create Project'),
       React.createElement('form', { onSubmit: handleCreate },
         React.createElement('div', { className: 'field' },
           React.createElement('label', { htmlFor: 'pm-name' }, 'Name'),
@@ -75,8 +89,9 @@ export default function ProjectManagement() {
             name: 'name',
             value: form.name,
             onChange: onFieldChange,
-            placeholder: 'e.g., Shot 010',
+            placeholder: 'e.g., Project ABC',
             required: true,
+            className: 'neu-input'
           })
         ),
         React.createElement('div', { className: 'field' },
@@ -88,9 +103,10 @@ export default function ProjectManagement() {
             onChange: onFieldChange,
             placeholder: 'Optional',
             rows: 3,
+            className: 'neu-textarea'
           })
         ),
-        React.createElement('button', { type: 'submit', disabled: creating },
+        React.createElement('button', { type: 'submit', disabled: creating, className: 'neu-button' },
           creating ? 'Creating…' : 'Create Project'
         )
       ),
@@ -108,13 +124,20 @@ export default function ProjectManagement() {
               projects.map((p) =>
                 React.createElement('li', { key: p.id, className: 'pm-project-item' },
                   React.createElement('a', {
-                    // Link to assets page with projectId
-                    href: `/assets?projectId=${encodeURIComponent(p.id)}`, // SPA route handled by React Router
+                    href: `/assets?projectId=${encodeURIComponent(p.id)}`,
                     title: `Open assets for ${p.name}`,
                   }, p.name),
                   p.description
                     ? React.createElement('div', { className: 'pm-project-desc' }, p.description)
-                    : null
+                    : null,
+                  // New: Delete button
+                  React.createElement('button', {
+                    type: 'button',
+                    className: 'pm-delete-btn',
+                    onClick: () => handleDeactivate(p.id),
+                    title: 'Delete project',
+                    style: { marginLeft: '0.75rem' }
+                  }, 'Delete')
                 )
               )
             )
