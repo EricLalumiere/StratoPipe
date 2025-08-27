@@ -53,3 +53,14 @@ export async function deactivateProject(projectId) {
   // If the file already defines a common client variable, reuse it:
   return axios.patch(`/api/projects/${projectId}/`, { active: false });
 }
+
+// api/projects.js
+
+const PROJECTS_API = '/api/projects/';
+
+export async function fetchProjectById(projectId) {
+  const res = await axios.get(`${PROJECTS_API}${encodeURIComponent(projectId)}/`, {
+    withCredentials: true,
+  });
+  return res.data;
+}

@@ -12,22 +12,23 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <div style="margin-top: 2rem;"></div>
     <header>
-        <h1>Welcome to StratoPipe</h1>
+        <h1>StratoPipe</h1>
         <h3>a 3D Production Pipeline in the Cloud</h3>
         <h3>created by Eric Lalumiere</h3>
     </header>
     <ul style="text-align: left; margin: 0 2rem;">
-        <li>
-            Overview: StratoPipe is an integrated animation asset processing
+        <h4>Overview:</h4>
+        <p>
+            StratoPipe is an integrated animation asset processing
             and collaboration platform built using Django (with Django REST,
             Channels, and Celery) on the backend and React on the frontend.
             This proof of concept (PoC) focuses on implementing core
             functionalities to demonstrate the platform's potential.
-        </li>
-
-        <li>
+        </p>
+        <div style="margin-top: 1rem;"></div>
+        <h4>
             This early-stage implementation demonstrates:
-        </li>
+        </h4>
     <ul>
         <li> A rudimentary interface for managing 3D assets and projects.</li>
         <li> A RESTful API for asset management and project collaboration.</li>
@@ -35,9 +36,10 @@
         <li> A modular architecture that allows for future expansion and
              integration with other tools.</li>
     </ul>
-    <li>
+    <div style="margin-top: 1rem;"></div>
+    <h4>
         The StratoPipe platform includes:
-    </li>
+    </h4>
     <ul>
         <li> User authentication and registration with JWT tokens.</li>
         <li> A Django backend with user authentication, project management,
@@ -51,9 +53,10 @@
             asset views, and receiving live notifications.</li>
     </ul>
     </ul>
-    </p>
-    <div style="margin-top: 2rem;"></div>
-
+    <h3 style="margin-top: 2rem;">
+        Please log in or register to explore the platform.
+    </h3>
+    <div style="margin-top: 1rem;"></div>
     <div style="text-align: left;" class="buttons">
         <a href="login.html">
             <button class="neu-button">
@@ -67,7 +70,13 @@
                 <span>Register</span>
         </button></a>
     </div>
-
+    <div style="margin-top: 2rem;"></div>
+    <p style="text-align: left; margin: 0 2rem;">
+        Note: This is an early-stage proof of concept (PoC) and does not
+        include all features of a full production pipeline. Future
+        iterations will focus on enhancing functionality, improving the
+        user interface, and integrating additional tools and services.
+    </p>
     <div id="root"></div>
 
 </body>

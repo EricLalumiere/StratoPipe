@@ -1,29 +1,33 @@
-""" This module contains the serializers for the CustomUser model. """
-
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from rest_framework.validators import UniqueValidator
 
-CustomUser = get_user_model()
+from .models import CustomUser
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    """ Serializer for the CustomUser model. """
-    password = serializers.CharField(write_only=True,
-                                     required=True,
-                                     style={'input_type': 'password'})
+    # Enforce uniqueness with a clear message
+    username = serializers.CharField(
+        max_length=150,
+        validators=[
+            UniqueValidator(
+                queryset=CustomUser.objects.all(),
+                message="A user with that username already exists."
+            )
+        ],
+    )
 
     class Meta:
-        """ Define the fields to include in the serialized output. """
         model = CustomUser
-        fields = ['id', 'username', 'email', 'first_name', 'last_name',
-                  'password', 'bio', 'avatar']
+        fields = ["id", "username", "password", "email", "first_name", "last_name"]
+        extra_kwargs = {
+            "password": {"write_only": True, "min_length": 8},
+            "email": {"required": False, "allow_blank": True},
+        }
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password']
-        )
-        user.bio = validated_data.get('bio', '')
-        user.avatar = validated_data.get('avatar', None)
+        password = validated_data.pop("password", None)
+        user = CustomUser(**validated_data)
+        if password:
+            user.set_password(password)
         user.save()
         return user
