@@ -1,0 +1,276 @@
+/* components.css */
+
+/* 1. Theme Variables */
+:root {
+  /* Canvas & Text */
+  --bg-color: #F0F2F3;          /* light-gray background from the mockup */
+  --text-color: #333333;        /* charcoal body text */
+
+  /* Neumorphic Shadows */
+  --shadow-light: rgba(255, 255, 255, 0.8);
+  --shadow-dark:  rgba(0,   0,   0,   0.1);
+
+  /* Accent Palette */
+  --primary-color:   #1976D2;   /* StratoPipe blue */
+  --secondary-color: #90A4AE;   /* subtle gray for icons/borders */
+  --success-color:   #43A047;   /* play control green */
+  --danger-color:    #E53935;   /* pause control red */
+  --warning-color:   #FFB300;   /* progress control amber */
+
+  /* Spacing & Rounding */
+  --border-radius: 16px;
+  --padding-base:   20px;
+
+  /* Typography */
+  --font-family: 'Inter', sans-serif;
+}
+
+/* 2. Global Reset & Base Styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 3. Neumorphic Mixins */
+.neu {
+  background: var(--bg-color);
+  border-radius: var(--border-radius);
+  box-shadow:
+    8px  8px 16px var(--shadow-dark),
+   -8px -8px 16px var(--shadow-light);
+}
+
+.neu-inset {
+  background: var(--bg-color);
+  border-radius: var(--border-radius);
+  box-shadow:
+    inset 8px  8px 16px var(--shadow-dark),
+    inset -8px -8px 16px var(--shadow-light);
+}
+
+/* 4. Buttons */
+/* 4.1 Standard Button */
+.neu-btn {
+  composes: neu;
+  padding: var(--padding-base) 32px;
+  border: none;
+  font-size: 1rem;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+.neu-btn:hover {
+  box-shadow:
+    4px  4px  8px var(--shadow-dark),
+   -4px -4px   8px var(--shadow-light);
+}
+
+/* 4.2 Primary Button */
+.neu-btn--primary {
+  background: var(--primary-color);
+  color: white;
+  box-shadow:
+    4px  4px  8px rgba(0,0,0,0.2),
+   -4px -4px   8px rgba(255,255,255,0.3);
+}
+
+/* 4.3 Success & Danger Variants */
+.neu-btn--success {
+  background: var(--success-color);
+  color: white;
+}
+.neu-btn--danger {
+  background: var(--danger-color);
+  color: white;
+}
+
+/* 5. Icon Buttons (Back/Forward) */
+.neu-icon-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.neu-icon-btn .icon-wrapper {
+  composes: neu;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--secondary-color);
+}
+
+/* 6. Search Bar */
+.neu-search {
+  composes: neu-inset;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--padding-base);
+  height: 48px;
+  max-width: 400px;
+  width: 100%;
+}
+.neu-search .icon {
+  width: 24px;
+  height: 24px;
+  fill: var(--secondary-color);
+}
+.neu-search input {
+  flex: 1;
+  margin-left: 12px;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--text-color);
+  outline: none;
+}
+
+/* 7. Circular Controls (Play, Progress, Pause) */
+.neu-circle-btn {
+  composes: neu;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 12px;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+.neu-circle-btn.play {    background: var(--success-color); }
+.neu-circle-btn.pause {   background: var(--danger-color); }
+.neu-circle-btn.progress{ background: var(--warning-color); }
+
+.neu-circle-btn:hover {
+  box-shadow:
+    4px  4px  8px var(--shadow-dark),
+   -4px -4px   8px var(--shadow-light);
+}
+
+/* 8. Toggle Switch */
+.neu-toggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.neu-toggle input {
+  display: none;
+}
+.neu-toggle .track {
+  composes: neu;
+  width: 50px;
+  height: 28px;
+  border-radius: 14px;
+  position: relative;
+  background: var(--bg-color);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+.neu-toggle .thumb {
+  composes: neu;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left 0.2s ease;
+  background: var(--bg-color);
+}
+.neu-toggle input:checked + .track {
+  background: var(--primary-color);
+  box-shadow:
+    inset 4px  4px  8px rgba(0,0,0,0.2),
+    inset -4px -4px  8px rgba(255,255,255,0.3);
+}
+.neu-toggle input:checked + .track .thumb {
+  left: calc(100% - 26px);
+}
+
+/* 9. Utility Classes */
+.flex-row {
+  display: flex;
+  align-items: center;
+}
+
+/*––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
+/* 1. Define Neumorphic Variables */
+:root {
+  --neu-bg:      #e0e0e0;
+  --neu-shadow:  #bebebe;
+  --neu-highlight: #ffffff;
+  --neu-radius: 12px;
+  --neu-transition: all 0.2s ease-in-out;
+}
+
+/*––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
+/* 2. Base Styles for Inputs, Textareas, Selects */
+.neu-input,
+.neu-textarea,
+.neu-select {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  background: var(--neu-bg);
+  border: none;
+  border-radius: var(--neu-radius);
+  box-shadow:
+    inset 6px 6px 16px var(--neu-shadow),
+    inset -6px -6px 16px var(--neu-highlight);
+  font-size: 1rem;
+  color: #555;
+  transition: var(--neu-transition);
+}
+
+.neu-input:focus,
+.neu-textarea:focus,
+.neu-select:focus {
+  outline: none;
+  box-shadow:
+    inset 4px 4px 12px var(--neu-shadow),
+    inset -4px -4px 12px var(--neu-highlight);
+}
+
+/*––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––*/
+/* 3. Neumorphic Button (Default + Hover) */
+.neu-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  margin: 1rem 0;
+  background: var(--neu-bg);
+  border: none;
+  border-radius: var(--neu-radius);
+  color: #555;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    6px 6px 16px var(--neu-shadow),
+    -6px -6px 16px var(--neu-highlight);
+  transition: var(--neu-transition);
+}
+
+.neu-button:hover {
+  background: #ebebeb;
+  box-shadow:
+    4px 4px 12px var(--neu-shadow),
+    -4px -4px 12px var(--neu-highlight);
+}
+
+.neu-button:active {
+  box-shadow:
+    inset 4px 4px 12px var(--neu-shadow),
+    inset -4px -4px 12px var(--neu-highlight);
+}
+
+body {
+  background: var(--neu-bg);
+}

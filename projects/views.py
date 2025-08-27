@@ -12,6 +12,7 @@ from rest_framework import generics, permissions
 from .models import Project
 from .serializers import ProjectSerializer
 
+
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Custom permission to only allow owners of an object to edit it.
@@ -21,6 +22,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
         return obj.owner == request.user
 
+
 class ProjectListCreateView(generics.ListCreateAPIView):
     """
     View to list all projects for a user or create a new one.
@@ -29,12 +31,12 @@ class ProjectListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Users can only see their own projects
-        return Project.objects.filter(owner=self.request.user)
+        # Users can only see their own active projects
+        return Project.objects.filter(owner=self.request.user, active=True)
 
     def perform_create(self, serializer):
-        # Assign the current user as the owner of the new project
-        serializer.save(owner=self.request.user)
+        # Assign the current user as the owner of the new project and ensure it's active
+        serializer.save(owner=self.request.user, active=True)
 
 
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -45,5 +47,5 @@ class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        # Users can only access their own projects
-        return Project.objects.filter(owner=self.request.user)
+        # Users can only see their own active projects
+        return Project.objects.filter(owner=self.request.user, active=True)
