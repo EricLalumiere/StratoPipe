@@ -18,18 +18,50 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// If you also rely on cookies during dev, uncomment the next line:
-// api.defaults.withCredentials = true;
+// Always send cookies (needed for session/CSRF)
+api.defaults.withCredentials = true;
+
+// Simple, regex-free cookie reader
+function getCookie(name) {
+  const target = name + '=';
+  const parts = document.cookie.split(';');
+  for (let part of parts) {
+    part = part.trim();
+    if (part.startsWith(target)) {
+      return decodeURIComponent(part.slice(target.length));
+    }
+  }
+  return null;
+}
+
+// Prime CSRF cookie via safe GET if missing
+async function ensureCsrfCookie() {
+  if (getCookie('csrftoken')) return;
+  try { await fetch('/api/csrf/', { credentials: 'include' }); } catch {}
+  if (getCookie('csrftoken')) return;
+  try { await fetch('/api/', { credentials: 'include' }); } catch {}
+}
 
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const method = (config.method || 'get').toLowerCase();
+
+    // If you have a token, attach it using an auto-detected scheme:
+    // - If the stored value already includes a scheme (e.g., "Token x" or "Bearer x"), use it as-is.
+    // - Otherwise prefer "Token" (common for DRF token auth); fall back to "Bearer" if you know your backend is JWT.
     const raw = localStorage.getItem('authToken');
     if (raw) {
-      // If value already includes a scheme (e.g., "Token x" or "Bearer x"), send as-is.
-      // Otherwise default to Bearer.
       const hasScheme = /\s/.test(raw);
-      config.headers.Authorization = hasScheme ? raw : `Bearer ${raw}`;
+      config.headers.Authorization = hasScheme ? raw : `Token ${raw}`;
     }
+
+    // For unsafe methods, ensure CSRF cookie and set X-CSRFToken
+    if (['post', 'put', 'patch', 'delete'].includes(method)) {
+      await ensureCsrfCookie();
+      const csrf = getCookie('csrftoken');
+      if (csrf) config.headers['X-CSRFToken'] = csrf;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)

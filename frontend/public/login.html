@@ -32,7 +32,6 @@
 
 <!-- HTML -->
 <script>
-  // Simple, regex-free cookie reader
   function getCookie(name) {
     const target = name + '=';
     const parts = document.cookie.split(';');
@@ -57,7 +56,6 @@
     event.preventDefault();
 
     try {
-      // Ensure CSRF cookie exists for same-origin (3000)
       await ensureCsrfCookie();
       const csrf = getCookie('csrftoken');
 
@@ -66,7 +64,7 @@
         password: document.getElementById('password').value
       };
 
-      const response = await fetch('/api/auth/login/', {
+      const res = await fetch('/api/auth/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,25 +74,23 @@
         body: JSON.stringify(payload)
       });
 
-      // Try to parse JSON, but don't let failures block redirect
-      let result = null;
-      try { result = await response.clone().json(); } catch {}
+      let data = null;
+      try { data = await res.clone().json(); } catch {}
 
-      if (response.ok) {
-        // Store token if present, but redirect regardless of it
-        const token = result && (result.token || result.access || result.key || result.jwt) || null;
-        if (token) localStorage.setItem('authToken', token);
-
-        // Use replace() so Back won’t return to login
+      if (res.ok) {
+        if (data?.token || data?.key) {
+          const val = data.token || data.key;
+          localStorage.setItem('authToken', `Token ${val}`);
+        } else if (data?.access || data?.jwt) {
+          const val = data.access || data.jwt;
+          localStorage.setItem('authToken', val);
+        }
         window.location.replace('project-management.html');
-        return;
+      } else {
+        const text = data?.error || data?.detail || (await res.text().catch(() => 'Login failed.'));
+        document.getElementById('message').textContent = text || `Login failed (${res.status}).`;
       }
-
-      // Non-2xx: surface best available error
-      const text = result?.error || result?.detail || (await response.text().catch(() => 'Login failed.'));
-      document.getElementById('message').textContent = text || `Login failed (${response.status}).`;
-    } catch (err) {
-      console.error('Login error:', err);
+    } catch (e) {
       document.getElementById('message').textContent = 'An error occurred during login.';
     }
   });
