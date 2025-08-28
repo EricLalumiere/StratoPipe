@@ -11,7 +11,6 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Read ?projectId=... from the URL
   function getProjectId() {
     const params = new URLSearchParams(window.location.search);
     return params.get('projectId');
@@ -53,30 +52,69 @@ export default function ProjectDetail() {
   return React.createElement(
     'div',
     { className: 'pm-container' },
-    React.createElement('section', { className: 'pm-detail' },
-      React.createElement('h2', null, project.name || 'Untitled Project'),
-      project.description
-        ? React.createElement('p', null, project.description)
-        : null,
-      React.createElement('div', { className: 'pm-meta' },
-        // Render a few common metadata fields if present
-        project.created_at ? React.createElement('div', null, `Created: ${new Date(project.created_at).toLocaleString()}`) : null,
-        project.updated_at ? React.createElement('div', null, `Updated: ${new Date(project.updated_at).toLocaleString()}`) : null,
+
+    // Project metadata section
+    React.createElement(
+      'section',
+      { className: 'pm-detail' },
+      React.createElement('h2', null, (project?.name ? `Project: ${project.name}` : 'Untitled Project')),
+      project.description ? React.createElement('p', null, project.description) : null,
+      React.createElement(
+        'div',
+        { className: 'pm-meta' },
+        project.created_at
+          ? React.createElement('div', null, `Created: ${new Date(project.created_at).toLocaleString()}`)
+          : null,
+        project.updated_at
+          ? React.createElement('div', null, `Updated: ${new Date(project.updated_at).toLocaleString()}`)
+          : null,
         project.owner ? React.createElement('div', null, `Owner: ${project.owner}`) : null
+      ),
+      // Upload button
+      React.createElement(
+        'div',
+        { style: { margin: '0.75rem 0' } },
+        React.createElement(
+          'a',
+          {
+            className: 'neu-button',
+            href: `/upload.html?projectId=${encodeURIComponent(getProjectId())}`,
+            title: 'Upload an asset to this project',
+          },
+          'Upload'
+        )
       )
-    ),
-    React.createElement('section', { className: 'pm-assets' },
+    ), // <-- CLOSE pm-detail section with a comma
+
+    // Assets list section
+    React.createElement(
+      'section',
+      { className: 'pm-assets' },
       React.createElement('h3', null, 'Assets in this Project'),
       assets.length === 0
         ? React.createElement('div', null, 'No assets yet.')
-        : React.createElement('ul', { className: 'pm-project-assets' },
+        : React.createElement(
+            'ul',
+            { className: 'pm-project-assets' },
             assets.map((a) =>
-              React.createElement('li', { key: a.id, className: 'pm-asset-item' },
-                React.createElement('a', {
-                  href: `/asset.html?assetId=${encodeURIComponent(a.id)}`,
-                  title: `Open asset ${a.name}`,
-                }, a.name || `Asset #${a.id}`),
-                a.asset_type ? React.createElement('span', { style: { marginLeft: '0.5rem', color: '#666' } }, `(${a.asset_type})`) : null
+              React.createElement(
+                'li',
+                { key: a.id, className: 'pm-asset-item' },
+                React.createElement(
+                  'a',
+                  {
+                    href: `/asset.html?assetId=${encodeURIComponent(a.id)}`,
+                    title: `Open asset ${a.name}`,
+                  },
+                  a.name || `Asset #${a.id}`
+                ),
+                a.asset_type
+                  ? React.createElement(
+                      'span',
+                      { style: { marginLeft: '0.5rem', color: '#666' } },
+                      `(${a.asset_type})`
+                    )
+                  : null
               )
             )
           )

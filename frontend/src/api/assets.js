@@ -1,12 +1,8 @@
 // api/assets.js
-// Fetch assets filtered by project. Adjust the query param if your API differs.
-
-const ASSETS_API = '/api/assets/';
+const API_BASE = 'http://localhost:8000/api/assets/';
 
 export async function fetchAssetsForProject(projectId) {
-  // Common pattern: /api/assets/?project=<id>
-  const res = await axios.get(`${ASSETS_API}?project=${encodeURIComponent(projectId)}`, {
-    withCredentials: true,
-  });
+  const url = `${API_BASE}?project=${encodeURIComponent(projectId)}`;
+  const res = await axios.get(url, { withCredentials: true });
   return res.data;
 }
