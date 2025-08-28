@@ -55,11 +55,10 @@ export async function deactivateProject(projectId) {
 }
 
 // api/projects.js
-
-const PROJECTS_API = '/api/projects/';
+const API_BASE = 'http://localhost:8000/api/projects/';
 
 export async function fetchProjectById(projectId) {
-  const res = await axios.get(`${PROJECTS_API}${encodeURIComponent(projectId)}/`, {
+  const res = await axios.get(`${API_BASE}${encodeURIComponent(projectId)}/`, {
     withCredentials: true,
   });
   return res.data;
