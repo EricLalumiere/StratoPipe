@@ -24,6 +24,13 @@ from rest_framework import status
 from .models import Asset
 from projects.models import Project  # adjust if your Project model path differs
 
+from django.db.models import Max
+from django.utils.text import slugify
+from versions.models import Version
+
+# Python
+from rest_framework.views import APIView
+
 
 class AssetUploadView(generics.CreateAPIView):
     """
@@ -80,14 +87,15 @@ class AssetListView(generics.ListAPIView):
 @permission_classes([IsAuthenticated])
 def upload_asset(request):
     """
-    Save uploaded file under USER_DATA/<username>/<projectname>/ and create Asset.
-    Expects multipart/form-data with fields: name, asset_type, description (optional), file, project (id).
+    Save uploaded file under USER_DATA/<username>/<projectname>/ and create a Version.
+    If the Asset (project+name) doesn't exist, create it; then create Version(number=next).
+    The file reference lives on the Version.
     """
     user = request.user
     project_id = request.data.get('project')
     name = request.data.get('name')
     asset_type = request.data.get('asset_type')
-    description = request.data.get('description', '')
+    asset_description = request.data.get('description', '')
     upload = request.FILES.get('file')
 
     if not project_id or not name or not upload:
@@ -95,10 +103,37 @@ def upload_asset(request):
 
     project = get_object_or_404(Project, pk=project_id)
 
+    # Create/find the Asset shell
+    asset, created = Asset.objects.get_or_create(
+        project=project,
+        name=name,
+        defaults={
+            'description': asset_description or '',
+            'asset_type': asset_type or '',
+            'owner': user,
+        }
+    )
+    if not created:
+        fields_to_update = []
+        if asset_description:
+            asset.description = asset_description
+            fields_to_update.append('description')
+        if asset_type:
+            asset.asset_type = asset_type
+            fields_to_update.append('asset_type')
+        if fields_to_update:
+            asset.save(update_fields=fields_to_update)
+
+    # Determine next version number
+    max_number = asset.versions.aggregate(n=Max('number'))['n'] or 0
+    next_number = max_number + 1
+
+    # Save file to MEDIA_ROOT/USER_DATA/<username>/<project-slug>/
     base_root = getattr(settings, 'MEDIA_ROOT', None)
     if not base_root:
         base_root = Path(settings.BASE_DIR) / 'media'
-    target_dir = Path(base_root) / 'USER_DATA' / user.username / project.name
+    safe_project = slugify(project.name) or f'project-{project.id}'
+    target_dir = Path(base_root) / 'USER_DATA' / user.username / safe_project
     os.makedirs(target_dir, exist_ok=True)
 
     fs = FileSystemStorage(location=str(target_dir))
@@ -111,19 +146,43 @@ def upload_asset(request):
     except Exception:
         rel_path = absolute_path.as_posix()
 
-    asset = Asset(
-        name=name,
-        description=description or '',
-        asset_type=asset_type or '',
-        owner=user,
-        project=project,
+    # Create Version with initial metadata and file reference
+    version = Version.objects.create(
+        asset=asset,
+        number=next_number,
+        description='uploaded by the user',
+        user=user,
     )
-    asset.file.name = rel_path
-    asset.save()
+    version.file.name = rel_path
+    version.save(update_fields=['file'])
 
     return Response({
-        'id': asset.id,
-        'name': asset.name,
-        'project': project.id,
-        'file': asset.file.url if hasattr(asset.file, 'url') else rel_path,
+        'asset': asset.id,
+        'version': {
+            'id': version.id,
+            'number': version.number,
+            'file': version.file.url if hasattr(version.file, 'url') else version.file.name,
+            'description': version.description,
+            'user': version.user_id,
+            'created_at': version.created_at,
+        }
     }, status=status.HTTP_201_CREATED)
+
+
+class AssetVersionsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        asset = get_object_or_404(Asset, pk=pk, owner=request.user)
+        data = [
+            {
+                'id': v.id,
+                'number': v.number,
+                'file': (v.file.url if hasattr(v.file, 'url') else v.file.name),
+                'description': v.description,
+                'user': v.user_id,
+                'created_at': v.created_at,
+            }
+            for v in asset.versions.order_by('number')
+        ]
+        return Response({'asset': asset.id, 'versions': data}, status=status.HTTP_200_OK)

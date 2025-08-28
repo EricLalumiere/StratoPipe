@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     # Third-party apps
     'corsheaders',  # Added for handling CORS
     'rest_framework',
+    'versions',  # <-- add this line
 ]
 
 # Middleware for request handling

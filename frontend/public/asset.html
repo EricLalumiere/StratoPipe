@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Asset</title>
+  <link rel="stylesheet" href="/styles/components.css"/>
+  <link rel="stylesheet" href="/styles/ProjectManagement.css"/>
+</head>
+<body>
+  <main class="pm-container">
+    <section class="neu neu-frame">
+      <h2 id="assetTitle">Asset</h2>
+
+      <div class="field">
+        <label for="versionSelect">Version</label>
+        <select id="versionSelect" class="neu-select"></select>
+      </div>
+
+      <div id="versionMeta">
+        <div><strong>File:</strong> <span id="vFile"></span></div>
+        <div><strong>Description:</strong> <span id="vDesc"></span></div>
+        <div><strong>Created by:</strong> <span id="vUser"></span></div>
+        <div><strong>Created at:</strong> <span id="vCreated"></span></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="/js/asset.js" defer></script>
+</body>
+</html>
