@@ -135,3 +135,9 @@ STATICFILES_DIRS = [
 
 # Define the directory where static files will be collected
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Add (or extend) this list to trust the frontend origins for CSRF:
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
