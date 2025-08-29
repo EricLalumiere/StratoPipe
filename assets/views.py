@@ -1,35 +1,31 @@
+# Python
 """ This module contains the views for the assets app.
 
 It defines API endpoints for uploading assets, retrieving asset details,
-and listing all assets.
+listing assets, listing versions for an asset, and creating a new version ("version up").
 """
-
-from rest_framework import generics, permissions
-from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
-from .models import Asset
-from .serializers import AssetSerializer
-from .tasks import render_asset, process_asset_ai
 
 from pathlib import Path
 import os
+
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.db.models import Max
 from django.shortcuts import get_object_or_404
+from django.utils.text import slugify
+
+from rest_framework import generics, permissions
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status as drf_status
 
 from .models import Asset
-from projects.models import Project  # adjust if your Project model path differs
-
-from django.db.models import Max
-from django.utils.text import slugify
+from .serializers import AssetSerializer
+from projects.models import Project
 from versions.models import Version
-
-# Python
-from rest_framework.views import APIView
+from versions.constants import STATUS_VALUES
 
 
 class AssetUploadView(generics.CreateAPIView):
@@ -44,12 +40,7 @@ class AssetUploadView(generics.CreateAPIView):
     def perform_create(self, serializer):
         # Save the asset associated with the current authenticated user
         asset = serializer.save(owner=self.request.user)
-
-        # Trigger rendering or AI tasks based on asset type
-        if asset.asset_type == 'geometry':
-            render_asset.delay(asset.id)  # Asynchronous rendering task for geometry assets
-        else:
-            process_asset_ai.delay(asset.id)  # AI processing for non-geometry assets
+        # If you have async processing, trigger here (render/AI, etc.)
 
 
 class AssetDetailView(generics.RetrieveAPIView):
@@ -62,7 +53,6 @@ class AssetDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Ensure users can only access assets they own
         return Asset.objects.filter(owner=self.request.user)
 
 
@@ -87,7 +77,7 @@ class AssetListView(generics.ListAPIView):
 @permission_classes([IsAuthenticated])
 def upload_asset(request):
     """
-    Save uploaded file under USER_DATA/<username>/<projectname>/ and create a Version.
+    Save uploaded file under MEDIA_ROOT/USER_DATA/<username>/<project-slug>/ and create a Version.
     If the Asset (project+name) doesn't exist, create it; then create Version(number=next).
     The file reference lives on the Version.
     """
@@ -95,20 +85,20 @@ def upload_asset(request):
     project_id = request.data.get('project')
     name = request.data.get('name')
     asset_type = request.data.get('asset_type')
-    asset_description = request.data.get('description', '')
+    asset_description = (request.data.get('description') or '').strip()
     upload = request.FILES.get('file')
 
     if not project_id or not name or not upload:
-        return Response({'error': 'project, name and file are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'project, name and file are required.'}, status=drf_status.HTTP_400_BAD_REQUEST)
 
     project = get_object_or_404(Project, pk=project_id)
 
-    # Create/find the Asset shell
+    # Create/find the Asset shell (file is optional; versions hold the file)
     asset, created = Asset.objects.get_or_create(
         project=project,
         name=name,
         defaults={
-            'description': asset_description or '',
+            'description': asset_description,
             'asset_type': asset_type or '',
             'owner': user,
         }
@@ -128,10 +118,8 @@ def upload_asset(request):
     max_number = asset.versions.aggregate(n=Max('number'))['n'] or 0
     next_number = max_number + 1
 
-    # Save file to MEDIA_ROOT/USER_DATA/<username>/<project-slug>/
-    base_root = getattr(settings, 'MEDIA_ROOT', None)
-    if not base_root:
-        base_root = Path(settings.BASE_DIR) / 'media'
+    # Store file under MEDIA_ROOT/USER_DATA/<username>/<project-slug>/
+    base_root = getattr(settings, 'MEDIA_ROOT', None) or (Path(settings.BASE_DIR) / 'media')
     safe_project = slugify(project.name) or f'project-{project.id}'
     target_dir = Path(base_root) / 'USER_DATA' / user.username / safe_project
     os.makedirs(target_dir, exist_ok=True)
@@ -146,7 +134,7 @@ def upload_asset(request):
     except Exception:
         rel_path = absolute_path.as_posix()
 
-    # Create Version with initial metadata and file reference
+    # Create initial Version with default description
     version = Version.objects.create(
         asset=asset,
         number=next_number,
@@ -166,10 +154,13 @@ def upload_asset(request):
             'user': version.user_id,
             'created_at': version.created_at,
         }
-    }, status=status.HTTP_201_CREATED)
+    }, status=drf_status.HTTP_201_CREATED)
 
 
 class AssetVersionsView(APIView):
+    """
+    Returns all versions for an asset, ordered by version number.
+    """
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk):
@@ -182,7 +173,74 @@ class AssetVersionsView(APIView):
                 'description': v.description,
                 'user': v.user_id,
                 'created_at': v.created_at,
+                'status': v.status,
             }
             for v in asset.versions.order_by('number')
         ]
-        return Response({'asset': asset.id, 'versions': data}, status=status.HTTP_200_OK)
+        return Response({'asset': asset.id, 'versions': data}, status=drf_status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def version_up(request, pk):
+    """
+    Create a new Version for asset <pk>.
+    multipart/form-data fields:
+      - description (optional, defaults to 'uploaded by the user')
+      - status (required; one of STATUS_VALUES)
+      - file (required)
+    """
+    user = request.user
+    asset = get_object_or_404(Asset, pk=pk, owner=user)
+
+    upload = request.FILES.get('file')
+    status_value = request.POST.get('status')
+    desc = (request.POST.get('description') or '').strip() or 'uploaded by the user'
+
+    if not upload or not status_value:
+        return Response({'error': 'file and status are required.'}, status=drf_status.HTTP_400_BAD_REQUEST)
+    if status_value not in STATUS_VALUES:
+        return Response({'error': 'invalid status.'}, status=drf_status.HTTP_400_BAD_REQUEST)
+
+    # next version number
+    max_number = asset.versions.aggregate(n=Max('number'))['n'] or 0
+    next_number = max_number + 1
+
+    # store file to MEDIA_ROOT/USER_DATA/<username>/<project-slug>/
+    base_root = getattr(settings, 'MEDIA_ROOT', None) or (Path(settings.BASE_DIR) / 'media')
+    safe_project = slugify(asset.project.name) or f'project-{asset.project_id}'
+    target_dir = Path(base_root) / 'USER_DATA' / user.username / safe_project
+    os.makedirs(target_dir, exist_ok=True)
+
+    fs = FileSystemStorage(location=str(target_dir))
+    saved_name = fs.save(upload.name, upload)
+    absolute_path = Path(target_dir) / saved_name
+
+    try:
+        media_root = Path(base_root).resolve()
+        rel_path = absolute_path.resolve().relative_to(media_root).as_posix()
+    except Exception:
+        rel_path = absolute_path.as_posix()
+
+    version = Version.objects.create(
+        asset=asset,
+        number=next_number,
+        description=desc,
+        user=user,
+        status=status_value,
+    )
+    version.file.name = rel_path
+    version.save(update_fields=['file'])
+
+    return Response({
+        'asset': asset.id,
+        'version': {
+            'id': version.id,
+            'number': version.number,
+            'file': version.file.url if hasattr(version.file, 'url') else version.file.name,
+            'description': version.description,
+            'status': version.status,
+            'user': version.user_id,
+            'created_at': version.created_at,
+        }
+    }, status=drf_status.HTTP_201_CREATED)

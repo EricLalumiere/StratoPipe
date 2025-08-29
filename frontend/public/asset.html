@@ -23,6 +23,37 @@
         <div><strong>Created by:</strong> <span id="vUser"></span></div>
         <div><strong>Created at:</strong> <span id="vCreated"></span></div>
       </div>
+      <!-- Add this block (or ensure it exists) just under the #versionMeta div -->
+      <div style="margin-top: 0.75rem;">
+        <a id="downloadBtn" class="neu-button" href="#" download>Download file</a>
+      </div>
+    </section>
+    <!-- HTML -->
+    <!-- Keep your first frame; add this second frame below it -->
+    <section class="neu neu-frame" style="margin-top: 1rem;">
+      <h3>Version up</h3>
+      <form id="versionUpForm">
+        <div class="field">
+          <label for="newDesc">Description</label>
+          <textarea id="newDesc" name="description" rows="3" class="neu-textarea" placeholder="Optional"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="newStatus">Status</label>
+          <!-- In the Version up form, change the select id to match the script -->
+          <select id="statusSelect" name="status" class="neu-select" required>
+            <!-- options will be populated dynamically -->
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="newFile">Upload new file</label>
+          <input id="newFile" name="file" type="file" required />
+        </div>
+
+        <button type="submit" class="neu-button">Version up</button>
+        <div id="versionUpError" class="pm-error" style="display:none;margin-top:0.5rem;"></div>
+      </form>
     </section>
   </main>
 

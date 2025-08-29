@@ -4,6 +4,7 @@ from django.db import IntegrityError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -62,3 +63,9 @@ def login_user(request):
         {"error": "Invalid username or password. Please try again."},
         status=status.HTTP_401_UNAUTHORIZED
     )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def whoami(request):
+    return Response({'username': request.user.username})
