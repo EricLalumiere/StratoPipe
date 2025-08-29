@@ -6,7 +6,7 @@ from versions.models import Version
 class VersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Version
-        fields = ['id', 'number', 'file', 'description', 'user', 'created_at']
+        fields = ['id', 'number', 'file', 'description', 'user', 'created_at', 'status']
 
 class AssetSerializer(serializers.ModelSerializer):
     versions = VersionSerializer(many=True, read_only=True)

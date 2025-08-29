@@ -1,17 +1,14 @@
-""" Serializers for the assets app
-
-This module defines serializers to convert Asset model instances
-to and from JSON format for API interactions.
-It includes custom logic to handle fields like "uploaded_by" and
-auto-filling the asset name from the uploaded file if not provided.
-
-"""
-
 from rest_framework import serializers
 from .models import Asset
+from versions.models import Version
 
+class VersionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Version
+        fields = ['id', 'number', 'file', 'description', 'user', 'created_at', 'status']
 
 class AssetSerializer(serializers.ModelSerializer):
+    versions = VersionSerializer(many=True, read_only=True)
     """ Serializer for the Asset model """
     # Expose "uploaded_by" in the API, but map it to the model field "owner"
     uploaded_by = serializers.PrimaryKeyRelatedField(read_only=True, source='owner')
@@ -31,6 +28,7 @@ class AssetSerializer(serializers.ModelSerializer):
             'status',
             'created_at',
             'updated_at',
+            'versions'
         ]
         read_only_fields = [
             'id',
