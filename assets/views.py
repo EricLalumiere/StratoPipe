@@ -147,7 +147,7 @@ def upload_asset(request):
     return Response({
         'asset': asset.id,
         'version': {
-            'id': version.id,
+            'id': version.id,  # ensure this line exists
             'number': version.number,
             'file': version.file.url if hasattr(version.file, 'url') else version.file.name,
             'description': version.description,

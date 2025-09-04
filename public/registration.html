@@ -7,7 +7,6 @@
     <title>StratoPipe - User Registration</title>
     <link rel="stylesheet" href="/styles/Auth.css">
     <link rel="stylesheet" href="/styles/components.css">
-  <script src="/scripts/config.js"></script>
 </head>
 <body>
     <div class="auth-container">
@@ -42,10 +41,9 @@
       return;
     }
 
-    const LOGIN_URL = 'http://localhost:8000/api/auth/login/';
+    const REGISTER_URL = '/api/auth/register/';
+    const LOGIN_URL = '/api/auth/login/';
     const TARGET_URL = '/project-management.html';
-    const API_BASE = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL) || 'http://localhost:8000/api/';
-    const REGISTER_URL = new URL('auth/register/', API_BASE).toString();
 
     function getCookie(name) {
       const target = name + '=';
@@ -59,9 +57,9 @@
 
     async function ensureCsrfCookie() {
       if (getCookie('csrftoken')) return;
-      try { await fetch('http://localhost:8000/api/csrf/', { credentials: 'include' }); } catch {}
+      try { await fetch('/api/csrf/', { credentials: 'include' }); } catch {}
       if (getCookie('csrftoken')) return;
-      try { await fetch('http://localhost:8000/api/', { credentials: 'include' }); } catch {}
+      try { await fetch('/api/', { credentials: 'include' }); } catch {}
     }
 
     async function loginAndStoreToken(username, password, csrf) {
@@ -118,8 +116,8 @@
             'Content-Type': 'application/json',
             ...(csrf ? { 'X-CSRFToken': csrf } : {})
           },
-            credentials: 'include',
-            body: JSON.stringify({ username, password, email })
+          credentials: 'include',
+          body: JSON.stringify({ username, password, email })
         });
 
         let regData = null;

@@ -1,17 +1,14 @@
 // components/ProjectManagement.js
-// Bundler-free React component using globals (React, ReactDOM) and axios.
-// Exports a default component for project-management.html to import.
-
-import { fetchProjects, createProject } from '../api/projects.js';
+import React, { useEffect, useState } from 'react';
+import { fetchProjects, createProject, deactivateProject } from '../api/projects.js';
 
 export default function ProjectManagement() {
-  const { useEffect, useState } = React;
-
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
   const [form, setForm] = useState({ name: '', description: '' });
+  const [deletingIds, setDeletingIds] = useState(new Set());
 
   async function loadProjects() {
     try {
@@ -19,7 +16,6 @@ export default function ProjectManagement() {
       setError(null);
       const data = await fetchProjects();
       const raw = Array.isArray(data) ? data : (data?.results ?? []);
-      // Only keep active projects on the client side
       const onlyActive = raw.filter(p => p?.active === true);
       setProjects(onlyActive);
     } catch (e) {
@@ -47,9 +43,7 @@ export default function ProjectManagement() {
         name: form.name.trim(),
         description: form.description?.trim() || '',
       });
-      // Refresh the list immediately after creation
       await loadProjects();
-      // Reset form
       setForm({ name: '', description: '' });
     } catch (e) {
       setError('Failed to create project.');
@@ -64,10 +58,29 @@ export default function ProjectManagement() {
     setForm((f) => ({ ...f, [name]: value }));
   }
 
+  async function handleSoftDelete(projectId, projectName) {
+    const ok = window.confirm(`Soft delete project "${projectName}"? This will hide it from lists.`);
+    if (!ok) return;
+
+    setDeletingIds(prev => new Set(prev).add(projectId));
+    try {
+      await deactivateProject(projectId);
+      setProjects(prev => prev.filter(p => p.id !== projectId));
+    } catch (e) {
+      console.error(e);
+      setError(`Failed to delete "${projectName}".`);
+    } finally {
+      setDeletingIds(prev => {
+        const next = new Set(prev);
+        next.delete(projectId);
+        return next;
+      });
+    }
+  }
+
   return React.createElement(
     'div',
     { className: 'pm-container' },
-    // Create form
     React.createElement('section', { className: 'pm-create' },
       React.createElement('div', { className: 'neu-frame' },
         React.createElement('h3', null, 'Create Project'),
@@ -103,11 +116,7 @@ export default function ProjectManagement() {
         error && React.createElement('div', { className: 'pm-error' }, error)
       )
     ),
-
-    // add a spacer
     React.createElement('div', { style: { height: '1rem' } }),
-
-    // Projects list
     React.createElement('section', { className: 'pm-list' },
       React.createElement('div', { className: 'neu neu-frame' },
         React.createElement('h3', null, 'Your Projects'),
@@ -135,7 +144,14 @@ export default function ProjectManagement() {
                       }, p.name),
                       p.description
                         ? React.createElement('span', { className: 'pm-project-desc' }, p.description)
-                        : null
+                        : null,
+                      React.createElement('button', {
+                        type: 'button',
+                        onClick: () => handleSoftDelete(p.id, p.name),
+                        disabled: deletingIds.has(p.id),
+                        className: 'neu-button danger',
+                        title: 'Soft delete (deactivate) this project'
+                      }, deletingIds.has(p.id) ? 'Deleting…' : 'Delete')
                     )
                   )
                 )

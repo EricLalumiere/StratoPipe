@@ -8,10 +8,9 @@
     "axios": "^1.2.1",
     "esbuild": "0.25.9",
     "npm-run-all": "^4.1.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-router-dom": "^6.9.0",
-    "react-scripts": "^5.0.1"
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "^6.9.0"
   },
   "overrides": {
     "nth-check": "^2.1.1",
@@ -22,18 +21,15 @@
     "webpack-dev-server": "^4.15.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:pm": "esbuild public/entries/pm.entry.js --bundle --outfile=public/dist/pm.bundle.js --format=iife --platform=browser --define:process.env.REACT_APP_API_URL='\"http://localhost:8000/api/\"'",
+    "build": "npm run build:pm && npm run build:project",
+    "build:pm": "webpack --config webpack.pm.config.js",
     "build:create-project": "esbuild public/entries/create-project.entry.js --bundle --outfile=public/dist/create-project.bundle.js --format=iife --platform=browser --define:process.env.REACT_APP_API_URL='\"http://localhost:8000/api/\"'",
     "build:pages": "npm run build:pm && npm run build:create-project",
     "watch:pm": "esbuild public/entries/pm.entry.js --bundle --outfile=public/dist/pm.bundle.js --format=iife --platform=browser --watch --define:process.env.REACT_APP_API_URL='\"http://localhost:8000/api/\"'",
     "watch:create-project": "esbuild public/entries/create-project.entry.js --bundle --outfile=public/dist/create-project.bundle.js --format=iife --platform=browser --watch --define:process.env.REACT_APP_API_URL='\"http://localhost:8000/api/\"'",
     "serve:public": "python3 -m http.server 3000 -d public",
     "dev": "npm-run-all -p watch:* serve:public",
-    "build:project": "esbuild src/components/ProjectDetail.js --bundle --outfile=public/dist/project.bundle.js --format=iife --platform=browser --minify --external:react --external:react-dom"
+    "build:project": "webpack --config webpack.project.config.js"
   },
   "browserslist": {
     "production": [
@@ -48,6 +44,11 @@
     ]
   },
   "devDependencies": {
-    "webpack-cli": "^6.0.1"
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-react": "^7.24.7",
+    "babel-loader": "^9.2.1",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^5.1.4"
   }
 }

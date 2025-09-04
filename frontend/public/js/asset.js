@@ -34,6 +34,8 @@
   const newFile = document.getElementById('newFile');
   const versionUpForm = document.getElementById('versionUpForm');
   const versionUpError = document.getElementById('versionUpError');
+  const API_BASE = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL) || 'http://localhost:8000/api/';
+  const apiUrl = (path) => new URL(String(path || '').replace(/^\//, ''), API_BASE).toString();
 
   let versionsCache = [];
 
@@ -42,7 +44,7 @@
       console.warn('Status select element not found (#statusSelect or #newStatus). Skipping statuses load.');
       return;
     }
-    const res = await axios.get('http://localhost:8000/api/versions/statuses/', { withCredentials: true });
+    const res = await axios.get(apiUrl('versions/statuses/'), { withCredentials: true });
     const choices = res.data?.choices || [];
     statusSelect.innerHTML = '';
     choices.forEach(({ key, label }) => {
@@ -55,8 +57,8 @@
 
   async function loadAssetAndVersions() {
     const [assetRes, versionsRes] = await Promise.all([
-      axios.get(`http://localhost:8000/api/assets/${encodeURIComponent(assetId)}/`, { withCredentials: true }),
-      axios.get(`http://localhost:8000/api/assets/${encodeURIComponent(assetId)}/versions/`, { withCredentials: true }),
+      axios.get(apiUrl('assets/${encodeURIComponent(assetId)}/`), { withCredentials: true }),
+      axios.get(apiUrl('assets/${encodeURIComponent(assetId)}/versions/`), { withCredentials: true }),
     ]);
 
     const asset = assetRes.data;
@@ -134,7 +136,7 @@
 
       try {
         const res = await axios.post(
-          `http://localhost:8000/api/assets/${encodeURIComponent(assetId)}/version-up/`,
+          apiUrl('assets/${encodeURIComponent(assetId)}/version-up/`),
           fd,
           {
             withCredentials: true,
