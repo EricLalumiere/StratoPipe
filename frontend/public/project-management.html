@@ -1,42 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StratoPipe - Project Management</title>
-    <link rel="stylesheet" href="./styles/ProjectManagement.css">
-    <link rel="stylesheet" href="./styles/components.css">
-
-    <!-- React + ReactDOM UMD builds -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"
-    ></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
-    ></script>
-
-    <!-- Axios -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StratoPipe - Project Management</title>
+  <link rel="stylesheet" href="./styles/ProjectManagement.css">
+  <link rel="stylesheet" href="./styles/components.css">
 </head>
-
 <body>
-    <div style="margin-top: 2rem;"></div>
-    <header style="text-align: center;">
-        <h1>StratoPipe</h1>
-        <h2>Project Management</h2>
-    </header>
-     <!-- 4) Mount point for our component -->
-    <div id="pm-root"></div>
+  <div style="margin-top: 2rem;"></div>
+  <header style="text-align: center;">
+    <h1>StratoPipe</h1>
+    <h2>Project Management</h2>
+  </header>
 
-    <!-- Load the bundled script (no type=module) -->
-<!--    <script src="/dist/pm.bundle.js" defer></script>-->
-    <script src="/dist/pm.bundle.js?v=2" defer></script>
+  <div id="pm-root"></div>
 
+  <main>
+    <div id="projectManagementContainer"></div>
+  </main>
 
-    <main>
-        <div id="projectManagementContainer">
-            <!-- Content from ProjectManagement.js will be rendered here -->
-        </div>
-    </main>
-      <!-- HTML -->
-      <script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"></script>
+  <script src="/dist/pm.bundle.js" defer></script>
 </body>
 </html>

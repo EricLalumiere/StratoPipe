@@ -3,18 +3,6 @@
     const params = new URLSearchParams(window.location.search);
     return params.get(name);
   }
-
-  // Read csrftoken from cookies
-  function getCsrfCookie() {
-    const name = 'csrftoken=';
-    const parts = document.cookie.split(';');
-    for (let part of parts) {
-      part = part.trim();
-      if (part.startsWith(name)) return decodeURIComponent(part.slice(name.length));
-    }
-    return null;
-  }
-
   const projectId = getQueryParam('projectId');
   document.getElementById('projectId').value = projectId || '';
 
@@ -38,15 +26,12 @@
     const csrf = getCsrfCookie();
 
     try {
-      await axios.post('http://localhost:8000/api/assets/upload/', fd, {
+    (async function () {
+      const API_BASE = (window.APP_CONFIG && window.APP_CONFIG.API_BASE_URL) || 'http://localhost:8000/api/';
+      const apiUrl = (path) => new URL(String(path || '').replace(/^\//, ''), API_BASE).toString();
+      await axios.post(apiUrl('assets/upload/'), fd, {
         withCredentials: true,
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          // Include CSRF token if present (required for Django session-auth POST)
-          ...(csrf ? { 'X-CSRFToken': csrf } : {}),
-          // Django’s CSRF checks also validate Referer for HTTPS; safe to include for local dev
-          'Referer': 'http://localhost:8000/'
-        }
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
       window.location.href = `/project.html?projectId=${encodeURIComponent(projectId)}`;
     } catch (err) {

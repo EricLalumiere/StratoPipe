@@ -1,5 +1,6 @@
 """ Views for the authentication app. """
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth.forms import PasswordResetForm
 from django.db import IntegrityError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
@@ -69,3 +70,38 @@ def login_user(request):
 @permission_classes([IsAuthenticated])
 def whoami(request):
     return Response({'username': request.user.username})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def password_reset_by_username(request):
+    """
+    Accepts a username, resolves the email on file, and sends a password reset email.
+    Always returns a generic success message to avoid user enumeration.
+    """
+    username = (request.data.get("username") or "").strip()
+    if not username:
+        return Response({"detail": "Username is required."}, status=400)
+
+    User = get_user_model()
+    try:
+        user = User.objects.get(username=username)
+        email = (user.email or "").strip()
+        if email:
+            form = PasswordResetForm({"email": email})
+            if form.is_valid():
+                form.save(
+                    request=request,
+                    use_https=request.is_secure(),
+                    email_template_name="registration/password_reset_email.html",
+                    subject_template_name="registration/password_reset_subject.txt",
+                    # Optional overrides if you want to force a specific host/sender:
+                    # domain_override="app.example.com",
+                    # from_email="no-reply@example.com",
+                )
+    except User.DoesNotExist:
+        pass
+
+    return Response({
+        "detail": "If that username exists, a reset link has been sent to the email on file."
+    })
