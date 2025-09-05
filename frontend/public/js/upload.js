@@ -34,7 +34,8 @@
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       window.location.href = `/project.html?projectId=${encodeURIComponent(projectId)}`;
-    } catch (err) {
+    } )
+    catch (err) {
       const msg =
         err?.response?.data?.detail ||
         err?.response?.data?.error ||

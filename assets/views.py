@@ -180,6 +180,15 @@ class AssetVersionsView(APIView):
         return Response({'asset': asset.id, 'versions': data}, status=drf_status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    """
+    Return the current authenticated user's username.
+    """
+    return Response({'username': request.user.username})
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def version_up(request, pk):

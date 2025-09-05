@@ -16,6 +16,14 @@
     <div id="project-root"></div>
   </main>
 
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <!-- Ensure Axios UMD is loaded before modules/axiosInstance.js used by project.bundle.js -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    // Point the frontend to the Django API server. Keep the trailing slash.
+    window.__API_BASE__ = "http://localhost:8000/api/";
+  </script>
   <script src="/dist/project.bundle.js" defer></script>
 </body>
 </html>
