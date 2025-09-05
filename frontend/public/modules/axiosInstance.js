@@ -5,14 +5,12 @@ if (!axios) {
 }
 
 function computeBaseURL() {
-  const envUrl = typeof process !== "undefined" ? "http://localhost:8000/api/" : undefined;
-  if (envUrl) return envUrl.replace(/\/+$/, "/");
-  if (typeof window !== "undefined" && window.location?.origin && window.location.origin !== "null") {
-    return `${window.location.origin.replace(/\/+$/, "")}/api/`;
-  }
-  return "http://localhost:8000/api/";
+  // Prefer a globally provided base (set by the HTML), then env-injected, then a safe default.
+  const fromGlobal = (typeof window !== "undefined" && window.__API_BASE__) ? window.__API_BASE__ : undefined;
+  const fromEnv = (typeof process !== "undefined" && process.env && process.env.REACT_APP_API_URL) ? process.env.REACT_APP_API_URL : undefined;
+  const url = fromGlobal || fromEnv || "http://localhost:8000/api/";
+  return url.replace(/\/+$/, "/");
 }
-
 function getCsrfCookie() {
   const name = 'csrftoken=';
   const parts = document.cookie.split(';');

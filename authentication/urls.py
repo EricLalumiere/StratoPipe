@@ -7,6 +7,7 @@ from .views import (
     password_reset_by_username,
 )
 from django.views.generic.base import RedirectView
+from .views import get_current_user
 
 router = DefaultRouter()
 router.register(r'register', CustomUserViewSet, basename='register')
@@ -15,6 +16,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('login/', login_user, name="login"),
     path('whoami/', whoami, name='whoami'),
+    path('user/', get_current_user, name='current-user'),  # add this line
     path('password-reset-by-username/', password_reset_by_username, name='password-reset-by-username'),
     # Note: UI password reset views are centralized in stratopipe/urls.py
     # Optional: backward-compatible redirect in case any client hits the old path
