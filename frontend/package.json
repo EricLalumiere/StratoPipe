@@ -18,7 +18,7 @@
     "svgo": "^2.8.0",
     "@svgr/plugin-svgo": "^7.0.0",
     "@svgr/webpack": "^8.0.1",
-    "webpack-dev-server": "^4.15.2"
+    "webpack-dev-server": "^5.0.4"
   },
   "scripts": {
     "build": "npm run build:pm && npm run build:project",
@@ -29,26 +29,17 @@
     "watch:create-project": "esbuild public/entries/create-project.entry.js --bundle --outfile=public/dist/create-project.bundle.js --format=iife --platform=browser --watch --define:process.env.REACT_APP_API_URL='\"http://localhost:8000/api/\"'",
     "serve:public": "python3 -m http.server 3000 -d public",
     "dev": "npm-run-all -p watch:* serve:public",
-    "build:project": "webpack --config webpack.project.config.js"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "build:project": "webpack --config webpack.project.config.js",
+    "start": "webpack serve --config webpack.project.config.js --open --hot --port 3000",
+    "start:pm": "webpack serve --config webpack.pm.config.js --open --hot --port 3001"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "babel-loader": "^9.2.1",
-    "webpack": "^5.101.3",
-    "webpack-cli": "^5.1.4"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.2.2"
   }
 }
