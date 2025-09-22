@@ -58,7 +58,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            BASE_DIR / "frontend" / "public",  # serve templates from frontend/public
+            BASE_DIR / "frontend" / "public"  # serve templates from frontend/public
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -71,6 +71,10 @@ TEMPLATES = [
         },
     },
 ]
+# Ensure Django can find templates in the frontend public directory.
+# This allows references like 'registration/password_reset_*.html' to resolve to
+# frontend/public/registration/*.html without moving any files.
+TEMPLATES[0]["DIRS"] = list(TEMPLATES[0].get("DIRS", [])) + [BASE_DIR / "frontend" / "public"]
 
 # WSGI application settings
 WSGI_APPLICATION = 'stratopipe.wsgi.application'
@@ -108,6 +112,13 @@ USE_TZ = True
 # Static files configuration
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "frontend" / "public",
+]
+
+# Define the directory where static files will be collected
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -132,14 +143,6 @@ CORS_ALLOW_METHODS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "frontend/public/",
-]
-
-# Define the directory where static files will be collected
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
 # Add (or extend) this list to trust the frontend origins for CSRF:
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
@@ -156,14 +159,25 @@ EMAIL_BACKEND = os.getenv(
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@example.com")
 
-# SMTP settings (used when EMAIL_BACKEND is SMTP)
-EMAIL_HOST = os.getenv("EMAIL_HOST", "")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", "0") or 0)  # e.g., 587 for TLS, 465 for SSL
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
-EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() == "true"
-EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
+# Route emails to console in development, so password reset "emails" show up in the runserver console.
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    # Ensure no accidental SMTP usage in dev
+    EMAIL_HOST = ""
+    EMAIL_PORT = ""
+    EMAIL_HOST_USER = ""
+    EMAIL_HOST_PASSWORD = ""
+    EMAIL_USE_TLS = False
+    EMAIL_USE_SSL = False
+else:
+    # SMTP settings (used when EMAIL_BACKEND is SMTP)
+    EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+    EMAIL_PORT = int(os.getenv("EMAIL_PORT", "0") or 0)  # e.g., 587 for TLS, 465 for SSL
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
+    EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() == "true"
+    EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "10"))
 
-# Optional: the address that error emails come from (if you use ADMINS/MAIL_ADMINs)
-SERVER_EMAIL = os.getenv("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
+    # Optional: the address that error emails come from (if you use ADMINS/MAIL_ADMINs)
+    SERVER_EMAIL = os.getenv("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
