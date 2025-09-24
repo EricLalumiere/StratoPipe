@@ -29,9 +29,11 @@ class Asset(models.Model):
     description = models.TextField(blank=True)
 
     # Defines the type of the uploaded file
-    asset_type = models.CharField(max_length=20,
-                                  choices=ASSET_TYPES,
-                                  default='empty')
+    asset_type = models.CharField(
+        max_length=20,
+        choices=ASSET_TYPES,
+        default='image'
+    )
 
     # File storage for the asset itself
     file = models.FileField(upload_to='assets/', null=True, blank=True)
@@ -55,14 +57,12 @@ class Asset(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='uploaded_assets',
-        default=1
+        related_name='uploaded_assets'
     )  # Links the asset to the user who uploaded it
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        related_name='assets',
-        default=1
+        related_name='assets'
     )  # Links the asset to a project
 
     # Metadata

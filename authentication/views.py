@@ -27,7 +27,24 @@ class CustomUserViewSet(ModelViewSet):
     """
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [AllowAny]
+    # Only allow open access for creating an account; all other actions require authentication
+    def get_permissions(self):
+        if self.action in ["create"]:
+            return [AllowAny()]
+        return [IsAuthenticated()]
+
+    # Scope queryset to the current user for non-list actions; disable list to prevent data leakage
+    def get_queryset(self):
+        if self.action == "list":
+            # Prevent listing all users (privacy/security)
+            return CustomUser.objects.none()
+        if self.request and self.request.user.is_authenticated:
+            return CustomUser.objects.filter(id=self.request.user.id)
+        return CustomUser.objects.none()
+
+    # Ensure retrieve/update/destroy operate only on the current user
+    def get_object(self):
+        return CustomUser.objects.get(id=self.request.user.id)
 
     # Return a friendly conflict instead of a generic server error
     def create(self, request, *args, **kwargs):
