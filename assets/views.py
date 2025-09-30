@@ -91,7 +91,8 @@ def upload_asset(request):
     if not project_id or not name or not upload:
         return Response({'error': 'project, name and file are required.'}, status=drf_status.HTTP_400_BAD_REQUEST)
 
-    project = get_object_or_404(Project, pk=project_id)
+    # Ensure the project belongs to the current user
+    project = get_object_or_404(Project, pk=project_id, owner=user)
 
     # Create/find the Asset shell (file is optional; versions hold the file)
     asset, created = Asset.objects.get_or_create(
@@ -99,7 +100,8 @@ def upload_asset(request):
         name=name,
         defaults={
             'description': asset_description,
-            'asset_type': asset_type or '',
+            # ensure asset_type is one of the allowed choices; fallback to default
+            'asset_type': (asset_type if asset_type in dict(Asset.ASSET_TYPES) else Asset._meta.get_field('asset_type').default),
             'owner': user,
         }
     )
@@ -108,7 +110,7 @@ def upload_asset(request):
         if asset_description:
             asset.description = asset_description
             fields_to_update.append('description')
-        if asset_type:
+        if asset_type and asset_type in dict(Asset.ASSET_TYPES):
             asset.asset_type = asset_type
             fields_to_update.append('asset_type')
         if fields_to_update:
