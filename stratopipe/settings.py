@@ -129,6 +129,12 @@ AUTH_USER_MODEL = 'authentication.CustomUser'  # Custom user model
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # Frontend development server
     'http://127.0.0.1:3000',  # Alternate local address
+    'http://localhost:3001',  # Frontend development server (alternative port)
+    'http://127.0.0.1:3001',  # Alternate local address (alternative port)
+    'http://localhost:8000',  # Django backend server
+    'http://127.0.0.1:8000',  # Django backend server
+    'http://localhost:8001',  # Django backend server (alternative port)
+    'http://127.0.0.1:8001',  # Django backend server (alternative port)
     'http://localhost:63342',  # Allow requests from your frontend
     'http://127.0.0.1:63342',
 ]
@@ -147,6 +153,10 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3001',
+    'http://localhost:8001',
+    'http://127.0.0.1:8001',
 ]
 
 # Email configuration
