@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -34,6 +35,7 @@ import Sidebar from '../../components/Sidebar'
 import ProjectHeader from '../../components/ProjectHeader'
 import { useStatusPreferences } from '../../components/StatusPreferences'
 import BulkStatusManager from '../../components/BulkStatusManager'
+import { useProjectImages } from '../../hooks/useProjectImages'
 
 export default function AssetDatabase() {
   const { getStatusOptions, getStatusColor: getPreferredStatusColor } = useStatusPreferences()
@@ -74,6 +76,15 @@ export default function AssetDatabase() {
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadComplete, setDownloadComplete] = useState(false)
   const [showBulkStatusManager, setShowBulkStatusManager] = useState(false)
+
+  // Get current project from URL parameters
+  const searchParams = useSearchParams()
+  const currentProjectId = searchParams.get('project') || 'cyber-nexus'
+  
+  // Use the project images hook
+  const { images: storedImages, getImageUrl } = useProjectImages({ 
+    projectId: currentProjectId 
+  })
 
   const assets = [
     {
@@ -394,24 +405,38 @@ export default function AssetDatabase() {
   }
 
   const getAssetThumbnail = (asset: any) => {
+    // First try to find a stored image by name or type
+    const storedImage = storedImages.find(img => 
+      img.name.toLowerCase().includes(asset.name.toLowerCase()) ||
+      asset.name.toLowerCase().includes(img.name.toLowerCase())
+    )
+    
+    if (storedImage) {
+      return `/api/assets/${storedImage.id}/image/`
+    }
+    
     // If asset has a thumbnail, use it
     if (asset.thumbnail && !asset.thumbnail.includes('/api/placeholder/')) {
       return asset.thumbnail
     }
     
-    // Otherwise, use type-specific placeholder
-    switch (asset.type) {
-      case 'Character':
-        return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/947f5f83-17ea-4727-8bcc-8e40fb166ef6'
-      case 'Environment':
-        return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/a0172859-2b18-486c-bb68-413b09816d98'
-      case 'Prop':
-        return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/29ad8926-c761-4955-a819-a0623dfe5a5f'
-      case 'Vehicle':
-        return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/0512db2b-5daa-41bb-90a0-8e27b8bffda4'
-      default:
-        return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/29ad8926-c761-4955-a819-a0623dfe5a5f'
-    }
+    // Otherwise, use type-specific placeholder with fallback to stored images
+    const fallbackUrl = (() => {
+      switch (asset.type) {
+        case 'Character':
+          return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/947f5f83-17ea-4727-8bcc-8e40fb166ef6'
+        case 'Environment':
+          return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/a0172859-2b18-486c-bb68-413b09816d98'
+        case 'Prop':
+          return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/29ad8926-c761-4955-a819-a0623dfe5a5f'
+        case 'Vehicle':
+          return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/0512db2b-5daa-41bb-90a0-8e27b8bffda4'
+        default:
+          return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/29ad8926-c761-4955-a819-a0623dfe5a5f'
+      }
+    })()
+    
+    return getImageUrl(fallbackUrl, asset.name, asset.type)
   }
 
   const filteredAssets = assets.filter(asset => {

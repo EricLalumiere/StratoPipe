@@ -39,6 +39,7 @@ import {
 } from 'lucide-react'
 import Sidebar from '../../components/Sidebar'
 import ProjectHeader from '../../components/ProjectHeader'
+import { useProjectBackgroundImage } from '../../hooks/useProjectImages'
 
 export default function CurrentProject() {
   // Get current project from URL parameters
@@ -114,7 +115,15 @@ export default function CurrentProject() {
   const [isEditing, setIsEditing] = useState(false)
   const [projectData, setProjectData] = useState(getProjectData(currentProjectId))
 
+  // Use the project background image hook
+  const { imageUrl: backgroundImageUrl } = useProjectBackgroundImage(currentProjectId, projectData.name)
+
   const getProjectBackgroundImage = (projectName: string) => {
+    // Use stored image if available, otherwise fallback to hardcoded URLs
+    if (backgroundImageUrl) {
+      return backgroundImageUrl
+    }
+    
     switch (projectName) {
       case 'Cyber Nexus':
         return 'https://uxcanvas.ai/api/generated-images/d4dc8c64-5e7b-4927-853b-1ce5a65cd255/4c9119c6-1ee5-456c-b3c8-e432554d08c2'

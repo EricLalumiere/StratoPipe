@@ -20,6 +20,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status as drf_status
+from django.http import HttpResponse, Http404
+from django.views.decorators.cache import cache_control
 
 from .models import Asset
 from .serializers import AssetSerializer
@@ -255,3 +257,110 @@ def version_up(request, pk):
             'created_at': version.created_at,
         }
     }, status=drf_status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def serve_asset_image(request, asset_id):
+    """
+    Serve the image file for a specific asset.
+    """
+    try:
+        asset = Asset.objects.get(id=asset_id, owner=request.user)
+        if not asset.file:
+            raise Http404("Asset file not found")
+        
+        # Read the file content
+        with asset.file.open('rb') as f:
+            image_data = f.read()
+        
+        # Determine content type based on file extension
+        content_type = 'image/jpeg'  # Default
+        if asset.file.name.lower().endswith('.png'):
+            content_type = 'image/png'
+        elif asset.file.name.lower().endswith('.gif'):
+            content_type = 'image/gif'
+        elif asset.file.name.lower().endswith('.webp'):
+            content_type = 'image/webp'
+        
+        response = HttpResponse(image_data, content_type=content_type)
+        response['Content-Disposition'] = f'inline; filename="{asset.name}"'
+        return response
+        
+    except Asset.DoesNotExist:
+        raise Http404("Asset not found")
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def serve_asset_thumbnail(request, asset_id):
+    """
+    Serve the thumbnail for a specific asset.
+    """
+    try:
+        asset = Asset.objects.get(id=asset_id, owner=request.user)
+        if not asset.thumbnail:
+            raise Http404("Asset thumbnail not found")
+        
+        # Read the thumbnail content
+        with asset.thumbnail.open('rb') as f:
+            image_data = f.read()
+        
+        # Determine content type based on file extension
+        content_type = 'image/jpeg'  # Default
+        if asset.thumbnail.name.lower().endswith('.png'):
+            content_type = 'image/png'
+        elif asset.thumbnail.name.lower().endswith('.gif'):
+            content_type = 'image/gif'
+        elif asset.thumbnail.name.lower().endswith('.webp'):
+            content_type = 'image/webp'
+        
+        response = HttpResponse(image_data, content_type=content_type)
+        response['Content-Disposition'] = f'inline; filename="{asset.name}_thumb"'
+        return response
+        
+    except Asset.DoesNotExist:
+        raise Http404("Asset not found")
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def list_project_images(request):
+    """
+    List all images for a specific project with their metadata.
+    """
+    project_id = request.query_params.get('project')
+    if not project_id:
+        return Response({'error': 'project parameter is required'}, status=drf_status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        project = Project.objects.get(id=project_id, owner=request.user)
+    except Project.DoesNotExist:
+        return Response({'error': 'Project not found'}, status=drf_status.HTTP_404_NOT_FOUND)
+    
+    assets = Asset.objects.filter(
+        project=project,
+        owner=request.user,
+        asset_type='image'
+    ).order_by('name')
+    
+    image_data = []
+    for asset in assets:
+        image_data.append({
+            'id': asset.id,
+            'name': asset.name,
+            'description': asset.description,
+            'categories': asset.categories,
+            'ai_enhanced': asset.ai_enhanced,
+            'is_rendered': asset.is_rendered,
+            'created_at': asset.created_at,
+            'updated_at': asset.updated_at,
+            'image_url': f'/api/assets/{asset.id}/image/',
+            'thumbnail_url': f'/api/assets/{asset.id}/thumbnail/',
+        })
+    
+    return Response({
+        'project': project.name,
+        'images': image_data,
+        'count': len(image_data)
+    })
