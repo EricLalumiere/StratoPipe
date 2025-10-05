@@ -85,7 +85,7 @@ export default function SceneCreation() {
           <div className="max-w-4xl mx-auto">
             <div className="mb-6">
               <Link 
-                to={`/Scenes?project=${currentProject}`}
+                href={`/Scenes?project=${currentProject}`}
                 className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-1" />
@@ -246,7 +246,7 @@ export default function SceneCreation() {
 
               {/* Action Buttons */}
               <div className="flex justify-end gap-3 pt-6 border-t">
-                <Link to={`/Scenes?project=${currentProject}`}>
+                <Link href={`/Scenes?project=${currentProject}`}>
                   <Button variant="outline">
                     Cancel
                   </Button>

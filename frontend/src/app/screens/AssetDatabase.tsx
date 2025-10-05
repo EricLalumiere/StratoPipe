@@ -1051,7 +1051,7 @@ export default function AssetDatabase() {
                               onClick={(e) => e.stopPropagation()}
                             />
                           </div>
-                          <Link to={`/Asset?id=${asset.id}&name=${encodeURIComponent(asset.name)}`} className="block">
+                          <Link href={`/Asset?id=${asset.id}&name=${encodeURIComponent(asset.name)}`} className="block">
                             <div className="relative mb-4">
                               <div className="aspect-square bg-white rounded-lg overflow-hidden border border-slate-200">
                                 <img 
@@ -1142,12 +1142,19 @@ export default function AssetDatabase() {
                               )}
 
                               <div className="flex items-center gap-1 pt-2">
-                                <Link to={`/Asset?id=${asset.id}&name=${encodeURIComponent(asset.name)}`} className="flex-1">
-                                  <Button size="sm" variant="outline" className="w-full">
-                                    <Eye className="w-3 h-3 mr-1" />
-                                    View
-                                  </Button>
-                                </Link>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="w-full"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    window.location.href = `/Asset?id=${asset.id}&name=${encodeURIComponent(asset.name)}`
+                                  }}
+                                >
+                                  <Eye className="w-3 h-3 mr-1" />
+                                  View
+                                </Button>
                                 <Button size="sm" variant="outline" className="flex-1">
                                   <Download className="w-3 h-3 mr-1" />
                                   Download
@@ -1171,7 +1178,7 @@ export default function AssetDatabase() {
                               onClick={(e) => e.stopPropagation()}
                             />
                           </div>
-                          <Link to={`/Asset?id=${asset.id}&name=${encodeURIComponent(asset.name)}`} className="block pl-8">
+                          <Link href={`/Asset?id=${asset.id}&name=${encodeURIComponent(asset.name)}`} className="block pl-8">
                             <div className="flex items-center gap-4">
                               {/* Thumbnail */}
                               <div className="relative flex-shrink-0">
@@ -1249,12 +1256,18 @@ export default function AssetDatabase() {
 
                               {/* Actions */}
                               <div className="flex items-center gap-2 flex-shrink-0">
-                                <Link to={`/Asset?id=${asset.id}&name=${encodeURIComponent(asset.name)}`}>
-                                  <Button size="sm" variant="outline">
-                                    <Eye className="w-3 h-3 mr-1" />
-                                    View
-                                  </Button>
-                                </Link>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    window.location.href = `/Asset?id=${asset.id}&name=${encodeURIComponent(asset.name)}`
+                                  }}
+                                >
+                                  <Eye className="w-3 h-3 mr-1" />
+                                  View
+                                </Button>
                                 <Button size="sm" variant="outline">
                                   <Download className="w-3 h-3 mr-1" />
                                   Download

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -41,8 +42,8 @@ import ProjectHeader from '../../components/ProjectHeader'
 
 export default function CurrentProject() {
   // Get current project from URL parameters
-  const urlParams = new URLSearchParams(window.location.search)
-  const currentProjectId = urlParams.get('project') || 'cyber-nexus'
+  const searchParams = useSearchParams()
+  const currentProjectId = searchParams.get('project') || 'cyber-nexus'
   
   const projects = [
     { id: "cyber-nexus", name: "Cyber Nexus" },
@@ -536,7 +537,7 @@ export default function CurrentProject() {
                             <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <Link to="/User" className="font-medium text-slate-900 hover:text-blue-600">
+                            <Link href="/User" className="font-medium text-slate-900 hover:text-blue-600">
                               {member.name}
                             </Link>
                             <p className="text-sm text-slate-600">{member.role} • {member.department}</p>
@@ -573,7 +574,7 @@ export default function CurrentProject() {
                             <AvatarFallback>{actor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <Link to="/Actor" className="font-medium text-slate-900 hover:text-blue-600">
+                            <Link href="/Actor" className="font-medium text-slate-900 hover:text-blue-600">
                               {actor.name}
                             </Link>
                             <div className="flex flex-wrap gap-1 mt-1">
@@ -611,7 +612,7 @@ export default function CurrentProject() {
                 <CardContent>
                   <div className="space-y-3">
                     {assets.slice(0, 4).map((asset) => (
-                      <Link key={asset.id} to="/Asset" className="block">
+                      <Link key={asset.id} href="/Asset" className="block">
                         <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors">
                           <div className="relative">
                             <img src={getAssetThumbnail(asset)} alt={asset.name} className="w-10 h-10 rounded object-cover" />
@@ -646,7 +647,7 @@ export default function CurrentProject() {
                 <CardContent>
                   <div className="space-y-3">
                     {scenes.map((scene) => (
-                      <Link key={scene.id} to="/Scenes">
+                      <Link key={scene.id} href="/Scenes">
                         <div className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
                           <div>
                             <p className="text-sm font-medium text-slate-900">{scene.name}</p>
@@ -676,7 +677,7 @@ export default function CurrentProject() {
                 <CardContent>
                   <div className="space-y-3">
                     {tasks.map((task) => (
-                      <Link key={task.id} to="/Tasks">
+                      <Link key={task.id} href="/Tasks">
                         <div className="p-2 rounded-lg hover:bg-slate-50 cursor-pointer">
                           <div className="flex items-center justify-between mb-1">
                             <p className="text-sm font-medium text-slate-900">{task.name}</p>

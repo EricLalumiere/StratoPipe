@@ -1,31 +1,34 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { params: string[] } }
+  { params }: { params: Promise<{ params: string[] }> }
 ) {
-  const [width, height] = params.params;
-  
-  // Default values
-  const w = parseInt(width) || 32;
-  const h = parseInt(height) || 32;
-  
-  // Create a simple SVG placeholder
-  const svg = `
-    <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100%" height="100%" fill="#f1f5f9"/>
-      <rect x="10%" y="10%" width="80%" height="80%" fill="#e2e8f0"/>
-      <circle cx="50%" cy="40%" r="15%" fill="#94a3b8"/>
-      <rect x="25%" y="65%" width="50%" height="10%" fill="#94a3b8"/>
-    </svg>
-  `;
-  
-  return new Response(svg, {
-    headers: {
-      'Content-Type': 'image/svg+xml',
-      'Cache-Control': 'public, max-age=31536000',
-    },
-  });
+  try {
+    const { params: paramArray } = await params
+    const [width, height] = paramArray
+    
+    // Validate dimensions
+    const w = parseInt(width) || 100
+    const h = parseInt(height) || 100
+    
+    // Create a simple SVG placeholder
+    const svg = `
+      <svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="100%" height="100%" fill="#f3f4f6"/>
+        <text x="50%" y="50%" font-family="Arial, sans-serif" font-size="12" fill="#6b7280" text-anchor="middle" dy=".3em">
+          ${w}×${h}
+        </text>
+      </svg>
+    `
+    
+    return new NextResponse(svg, {
+      headers: {
+        'Content-Type': 'image/svg+xml',
+        'Cache-Control': 'public, max-age=31536000',
+      },
+    })
+  } catch (error) {
+    return new NextResponse('Error generating placeholder', { status: 500 })
+  }
 }
-
-

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Link } from '@/lib'
+import Link from 'next/link'
 import { Search, Plus, Grid, List, Eye, Edit, Trash2, CheckSquare, Calendar, User, Clock, AlertCircle, Users, GitBranch, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -838,7 +838,7 @@ export default function Tasks() {
                 </Select>
               </div>
 
-              <Link to={`/TaskCreation?project=${currentProject}`} className="w-full sm:w-auto">
+              <Link href={`/TaskCreation?project=${currentProject}`} className="w-full sm:w-auto">
                 <Button className="w-full sm:w-auto">
                   <Plus className="w-4 h-4 mr-2" />
                   New Task
@@ -1019,7 +1019,7 @@ export default function Tasks() {
                     )}
 
                     <div className="flex gap-2">
-                      <Link to={`/Task?id=${task.id}&project=${currentProject}`} className="flex-1">
+                      <Link href={`/Task?id=${task.id}&project=${currentProject}`} className="flex-1">
                         <Button size="sm" variant="outline" className="w-full">
                           <Eye className="w-4 h-4 mr-1" />
                           View
@@ -1114,7 +1114,7 @@ export default function Tasks() {
                         </div>
                       </div>
                       <div className="flex gap-1 ml-4">
-                        <Link to={`/Task?id=${task.id}&project=${currentProject}`}>
+                        <Link href={`/Task?id=${task.id}&project=${currentProject}`}>
                           <Button size="sm" variant="ghost">
                             <Eye className="w-4 h-4" />
                           </Button>
@@ -1181,7 +1181,7 @@ export default function Tasks() {
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-0.5"
                           />
                           <div className="flex-1">
-                            <Link to={`/Task?id=${task.id}&project=${currentProject}`}>
+                            <Link href={`/Task?id=${task.id}&project=${currentProject}`}>
                               <div className="flex items-start justify-between mb-2">
                                 <h5 className="font-medium text-gray-900 text-sm leading-tight">
                                   {task.name}
@@ -1250,7 +1250,7 @@ export default function Tasks() {
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-0.5"
                           />
                           <div className="flex-1">
-                            <Link to={`/Task?id=${task.id}&project=${currentProject}`}>
+                            <Link href={`/Task?id=${task.id}&project=${currentProject}`}>
                               <div className="flex items-start justify-between mb-2">
                                 <h5 className="font-medium text-gray-900 text-sm leading-tight">
                                   {task.name}
@@ -1319,7 +1319,7 @@ export default function Tasks() {
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-0.5"
                           />
                           <div className="flex-1">
-                            <Link to={`/Task?id=${task.id}&project=${currentProject}`}>
+                            <Link href={`/Task?id=${task.id}&project=${currentProject}`}>
                               <div className="flex items-start justify-between mb-2">
                                 <h5 className="font-medium text-gray-900 text-sm leading-tight">
                                   {task.name}
@@ -1385,7 +1385,7 @@ export default function Tasks() {
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-0.5"
                           />
                           <div className="flex-1">
-                            <Link to={`/Task?id=${task.id}&project=${currentProject}`}>
+                            <Link href={`/Task?id=${task.id}&project=${currentProject}`}>
                               <div className="flex items-start justify-between mb-2">
                                 <h5 className="font-medium text-gray-900 text-sm leading-tight">
                                   {task.name}
@@ -1614,7 +1614,7 @@ export default function Tasks() {
                               return (
                                 <Link 
                                   key={task.id} 
-                                  to={`/Task?id=${task.id}&project=${currentProject}`}
+                                  href={`/Task?id=${task.id}&project=${currentProject}`}
                                   className="block"
                                 >
                                   <div className={`text-xs p-2 rounded-md border-2 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md ${taskColor}`}>

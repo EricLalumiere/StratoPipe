@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Link } from '@/lib'
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -124,7 +124,7 @@ export default function Physical_Prop({ prop, viewMode = 'grid', onEdit, onDelet
             </div>
             
             <div className="flex gap-1 ml-4">
-              <Link to={`/PhysicalProperty?id=${prop.id}&project=${prop.project.id}`}>
+              <Link href={`/PhysicalProperty?id=${prop.id}&project=${prop.project.id}`}>
                 <Button size="sm" variant="ghost">
                   <Eye className="w-4 h-4" />
                 </Button>
@@ -176,7 +176,7 @@ export default function Physical_Prop({ prop, viewMode = 'grid', onEdit, onDelet
           
           <div className="flex items-center gap-1">
             <FolderOpen className="w-3 h-3" />
-            <Link to={`/CurrentProject?project=${prop.project.id}`} className="text-blue-600 hover:text-blue-700">
+            <Link href={`/CurrentProject?project=${prop.project.id}`} className="text-blue-600 hover:text-blue-700">
               {prop.project.name}
             </Link>
           </div>
@@ -206,7 +206,7 @@ export default function Physical_Prop({ prop, viewMode = 'grid', onEdit, onDelet
         </div>
 
         <div className="flex gap-2">
-          <Link to={`/PhysicalProperty?id=${prop.id}&project=${prop.project.id}`} className="flex-1">
+          <Link href={`/PhysicalProperty?id=${prop.id}&project=${prop.project.id}`} className="flex-1">
             <Button size="sm" variant="outline" className="w-full">
               <Eye className="w-4 h-4 mr-1" />
               View

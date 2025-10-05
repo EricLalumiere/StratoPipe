@@ -274,7 +274,7 @@ export default function PropRelation({
                       </div>
                       <div>
                         <Link 
-                          to={`/PhysicalProperty?id=${relation.physicalProp.id}`} 
+                          href={`/PhysicalProperty?id=${relation.physicalProp.id}`} 
                           className="font-medium text-blue-600 hover:text-blue-700"
                         >
                           {relation.physicalProp.name}
@@ -304,7 +304,7 @@ export default function PropRelation({
                       </div>
                       <div>
                         <Link 
-                          to={`/Asset?id=${relation.digitalAsset.id}`} 
+                          href={`/Asset?id=${relation.digitalAsset.id}`} 
                           className="font-medium text-blue-600 hover:text-blue-700"
                         >
                           {relation.digitalAsset.name}

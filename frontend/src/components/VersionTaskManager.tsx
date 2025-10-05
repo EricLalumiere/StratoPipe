@@ -134,11 +134,11 @@ export default function VersionTaskManager({
                         {getInheritanceIcon(relation)}
                         <div>
                           <div className="font-medium text-slate-900">
-                            <Link to={`/Version?id=${relation.versionId}`} className="text-blue-600 hover:text-blue-800">
+                            <Link href={`/Version?id=${relation.versionId}`} className="text-blue-600 hover:text-blue-800">
                               {relation.versionName}
                             </Link>
                             {' → '}
-                            <Link to={`/Task?id=${relation.taskId}`} className="text-blue-600 hover:text-blue-800">
+                            <Link href={`/Task?id=${relation.taskId}`} className="text-blue-600 hover:text-blue-800">
                               {relation.taskName}
                             </Link>
                           </div>
@@ -219,11 +219,11 @@ export default function VersionTaskManager({
                   <div className="flex items-center gap-3">
                     <Unlink className="w-4 h-4 text-gray-400" />
                     <div className="text-sm text-slate-600">
-                      <Link to={`/Version?id=${relation.versionId}`} className="text-slate-700 hover:text-slate-900">
+                      <Link href={`/Version?id=${relation.versionId}`} className="text-slate-700 hover:text-slate-900">
                         {relation.versionName}
                       </Link>
                       {' ↔ '}
-                      <Link to={`/Task?id=${relation.taskId}`} className="text-slate-700 hover:text-slate-900">
+                      <Link href={`/Task?id=${relation.taskId}`} className="text-slate-700 hover:text-slate-900">
                         {relation.taskName}
                       </Link>
                     </div>

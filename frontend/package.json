@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "GENERATE_SOURCEMAP=false DISABLE_ESLINT_PLUGIN=true NEXT_TELEMETRY_DISABLED=1 next dev",
+    "build": "GENERATE_SOURCEMAP=false NEXT_TELEMETRY_DISABLED=1 next build",
     "start": "next start",
     "lint": "next lint"
   },

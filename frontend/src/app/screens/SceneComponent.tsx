@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Link } from '@/lib'
+import Link from 'next/link'
 import { ArrowLeft, Edit, Save, X, Plus, Eye, Trash2, MapPin, Clock, Sun, User, Calendar, Clapperboard, Film, FileText, Camera, Play, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -132,7 +132,7 @@ export default function Scene() {
           />
 
           <div className="mb-6">
-            <Link to={`/Scenes?project=${currentProject}`}>
+            <Link href={`/Scenes?project=${currentProject}`}>
               <Button variant="outline" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Scenes
@@ -412,7 +412,7 @@ export default function Scene() {
                       {associatedTakes.map((take) => (
                         <div key={take.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div>
-                            <Link to={`/Take?id=${take.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
+                            <Link href={`/Take?id=${take.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
                               {take.name}
                             </Link>
                             <div className="text-sm text-gray-500">
@@ -455,7 +455,7 @@ export default function Scene() {
                       {associatedClips.map((clip) => (
                         <div key={clip.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div>
-                            <Link to={`/Clip?id=${clip.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
+                            <Link href={`/Clip?id=${clip.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
                               {clip.name}
                             </Link>
                             <div className="text-sm text-gray-500">
@@ -498,7 +498,7 @@ export default function Scene() {
                       {associatedEDLs.map((edl) => (
                         <div key={edl.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div>
-                            <Link to={`/EDL?id=${edl.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
+                            <Link href={`/EDL?id=${edl.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
                               {edl.name}
                             </Link>
                             <div className="text-sm text-gray-500">
@@ -541,7 +541,7 @@ export default function Scene() {
                       {associatedSequences.map((sequence) => (
                         <div key={sequence.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div>
-                            <Link to={`/Sequence?id=${sequence.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
+                            <Link href={`/Sequence?id=${sequence.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
                               {sequence.name}
                             </Link>
                             <div className="text-sm text-gray-500">
@@ -584,7 +584,7 @@ export default function Scene() {
                       {associatedShots.map((shot) => (
                         <div key={shot.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div>
-                            <Link to={`/Shot?id=${shot.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
+                            <Link href={`/Shot?id=${shot.id}&project=${currentProject}`} className="font-medium text-blue-600 hover:text-blue-800">
                               {shot.name}
                             </Link>
                             <div className="text-sm text-gray-500">

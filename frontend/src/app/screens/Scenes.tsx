@@ -238,7 +238,7 @@ export default function Scenes() {
                 {viewMode === 'grid' ? <List className="w-4 h-4" /> : <Grid className="w-4 h-4" />}
               </Button>
 
-              <Link to={`/SceneCreation?project=${currentProject}`}>
+              <Link href={`/SceneCreation?project=${currentProject}`}>
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
                   New Scene
@@ -310,7 +310,7 @@ export default function Scenes() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Link to={`/SceneComponent?id=${scene.id}&project=${currentProject}`} className="flex-1">
+                      <Link href={`/SceneComponent?id=${scene.id}&project=${currentProject}`} className="flex-1">
                         <Button size="sm" variant="outline" className="w-full">
                           <Eye className="w-4 h-4 mr-1" />
                           View
@@ -392,7 +392,7 @@ export default function Scenes() {
                         </div>
                       </div>
                       <div className="flex gap-1 ml-4 flex-shrink-0">
-                        <Link to={`/SceneComponent?id=${scene.id}&project=${currentProject}`}>
+                        <Link href={`/SceneComponent?id=${scene.id}&project=${currentProject}`}>
                           <Button size="sm" variant="ghost">
                             <Eye className="w-4 h-4" />
                           </Button>
@@ -439,7 +439,7 @@ export default function Scenes() {
                   : `No scenes have been created for ${getProjectName(currentProject)} yet.`
                 }
               </p>
-              <Link to={`/SceneCreation?project=${currentProject}`}>
+              <Link href={`/SceneCreation?project=${currentProject}`}>
                 <Button>
                   <Plus className="w-4 h-4 mr-2" />
                   Create First Scene

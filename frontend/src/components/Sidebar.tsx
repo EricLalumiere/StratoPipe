@@ -89,7 +89,7 @@ export default function Sidebar({ currentProject, projects = [] }: SidebarProps)
   }
 
   return (
-    <div className="w-64 h-screen bg-gradient-to-b from-slate-50 to-slate-100 border-r border-slate-200 shadow-xl flex flex-col">
+    <div className="w-64 h-screen bg-gradient-to-b from-slate-50 to-slate-100 border-r border-slate-200 shadow-xl flex flex-col relative z-0">
       {/* Logo Section */}
       <div className="p-6 border-b border-slate-200">
         <Logo size="md" />
@@ -113,14 +113,16 @@ export default function Sidebar({ currentProject, projects = [] }: SidebarProps)
         <Separator className="mx-4 my-1" />
 
         {/* Project Selection */}
-        <div className="p-4">
+        <div className="p-4 relative z-10">
           <div className="mb-4">
             <label className="text-sm font-medium text-slate-600 mb-2 block">Current Project</label>
             <Select value={selectedProject} onValueChange={setSelectedProject}>
               <SelectTrigger className="w-full bg-white shadow-sm border-slate-200">
-                <SelectValue placeholder="Select a project..." />
+                <SelectValue placeholder="Select a project...">
+                  {getProjectName(selectedProject)}
+                </SelectValue>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-[9999] bg-white shadow-xl border border-slate-200 rounded-md">
                 {availableProjects.map((project) => (
                   <SelectItem key={project.id} value={project.id}>
                     {project.name}
@@ -131,7 +133,7 @@ export default function Sidebar({ currentProject, projects = [] }: SidebarProps)
           </div>
 
           {/* Project Navigation */}
-          <nav className="space-y-1">
+          <nav className="space-y-1 relative z-0">
             {projectNavItems.map((item) => (
               <Link
                 key={item.path}
